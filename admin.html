@@ -9,29 +9,45 @@
   :root {
     --green: #1D9E75; --green-dark: #0F6E56; --green-light: #E1F5EE; --green-text: #085041;
     --red: #E24B4A; --red-light: #FCEBEB; --red-text: #501313;
+    --blue: #2563EB; --blue-light: #EFF6FF; --blue-text: #1E3A8A;
     --gray-bg: #F8F8F5; --gray-border: rgba(0,0,0,0.1);
     --text: #1a1a18; --text-sub: #5F5E5A;
   }
   body { font-family: -apple-system, 'Pretendard', 'Apple SD Gothic Neo', sans-serif; background: var(--gray-bg); color: var(--text); }
 
-  /* header */
+  /* ── 로그인 화면 ── */
+  .login-wrap { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+  .login-box { background: white; border-radius: 16px; border: 0.5px solid var(--gray-border); padding: 36px 32px; width: 100%; max-width: 380px; }
+  .login-logo { width: 44px; height: 44px; background: var(--green); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+  .login-logo svg { width: 26px; height: 26px; fill: white; }
+  .login-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .login-sub { font-size: 13px; color: var(--text-sub); margin-bottom: 28px; }
+  .login-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .login-field label { font-size: 12px; font-weight: 600; color: var(--text-sub); }
+  .login-field input { padding: 11px 14px; border: 0.5px solid var(--gray-border); border-radius: 8px; font-size: 14px; outline: none; }
+  .login-field input:focus { border-color: var(--green); }
+  .login-btn { width: 100%; padding: 12px; background: var(--green); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 8px; }
+  .login-btn:hover { background: var(--green-dark); }
+  .login-btn:disabled { background: #a0cfc0; cursor: not-allowed; }
+  .login-error { font-size: 12px; color: var(--red); margin-top: 10px; text-align: center; min-height: 18px; }
+
+  /* ── 관리자 UI ── */
+  #admin-ui { display: none; }
   .admin-header { background: #1a1a18; padding: 14px 24px; display: flex; align-items: center; gap: 16px; }
   .admin-logo { font-size: 15px; font-weight: 700; color: white; }
   .admin-badge { font-size: 11px; padding: 3px 10px; background: var(--green); color: white; border-radius: 20px; }
-  .header-link { margin-left: auto; font-size: 13px; color: #888; text-decoration: none; }
+  .header-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+  .header-user { font-size: 12px; color: #888; }
+  .header-link { font-size: 13px; color: #888; text-decoration: none; cursor: pointer; background: none; border: none; }
   .header-link:hover { color: white; }
-
-  /* tabs */
-  .tabs { display: flex; background: white; border-bottom: 0.5px solid var(--gray-border); padding: 0 24px; }
-  .tab { padding: 14px 20px; font-size: 14px; color: var(--text-sub); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.12s; }
+  .tabs { display: flex; background: white; border-bottom: 0.5px solid var(--gray-border); padding: 0 24px; overflow-x: auto; }
+  .tab { padding: 14px 18px; font-size: 14px; color: var(--text-sub); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.12s; white-space: nowrap; }
   .tab.active { color: var(--green); border-bottom-color: var(--green); font-weight: 600; }
-
-  /* content */
   .content { max-width: 1100px; margin: 0 auto; padding: 24px; }
   .section { display: none; }
   .section.active { display: block; }
 
-  /* stat cards */
+  /* 카드 */
   .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
   @media (max-width: 700px) { .stat-row { grid-template-columns: 1fr 1fr; } }
   .stat-card { background: white; border: 0.5px solid var(--gray-border); border-radius: 12px; padding: 16px 18px; }
@@ -41,28 +57,24 @@
   .stat-card.highlight { border-color: var(--green); }
   .stat-card.highlight .stat-card-value { color: var(--green); }
 
-  /* chart */
+  /* 차트 */
   .chart-wrap { background: white; border: 0.5px solid var(--gray-border); border-radius: 12px; padding: 20px; margin-bottom: 28px; }
-  .chart-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; }
+  .chart-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
   .chart-bars { display: flex; align-items: flex-end; gap: 6px; height: 160px; }
   .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
-  .bar { width: 100%; background: var(--green-light); border-radius: 4px 4px 0 0; min-height: 4px; transition: background 0.1s; position: relative; cursor: pointer; }
-  .bar:hover { background: var(--green); }
-  .bar.today { background: var(--green); }
+  .bar { width: 100%; background: var(--green-light); border-radius: 4px 4px 0 0; min-height: 4px; cursor: pointer; }
+  .bar:hover, .bar.today { background: var(--green); }
   .bar-label { font-size: 10px; color: var(--text-sub); white-space: nowrap; }
   .bar-val { font-size: 10px; color: var(--text-sub); }
 
-  /* table */
-  .table-wrap { background: white; border: 0.5px solid var(--gray-border); border-radius: 12px; overflow: hidden; }
-  .table-header { padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 0.5px solid var(--gray-border); }
+  /* 테이블 */
+  .table-wrap { background: white; border: 0.5px solid var(--gray-border); border-radius: 12px; overflow: hidden; margin-bottom: 28px; }
+  .table-header { padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 0.5px solid var(--gray-border); flex-wrap: wrap; gap: 10px; }
   .table-title { font-size: 14px; font-weight: 600; }
   .btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; border: none; }
-  .btn-green { background: var(--green); color: white; }
-  .btn-green:hover { background: var(--green-dark); }
-  .btn-outline { background: white; color: var(--text); border: 0.5px solid var(--gray-border); }
-  .btn-outline:hover { background: var(--gray-bg); }
-  .btn-red { background: var(--red-light); color: var(--red-text); }
-  .btn-red:hover { background: #F7C1C1; }
+  .btn-green { background: var(--green); color: white; } .btn-green:hover { background: var(--green-dark); }
+  .btn-outline { background: white; color: var(--text); border: 0.5px solid var(--gray-border); } .btn-outline:hover { background: var(--gray-bg); }
+  .btn-red { background: var(--red-light); color: var(--red-text); } .btn-red:hover { background: #F7C1C1; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   th { background: var(--gray-bg); padding: 10px 16px; text-align: left; font-weight: 600; font-size: 12px; color: var(--text-sub); border-bottom: 0.5px solid var(--gray-border); }
   td { padding: 12px 16px; border-bottom: 0.5px solid var(--gray-border); vertical-align: middle; }
@@ -70,10 +82,38 @@
   tr:hover td { background: var(--gray-bg); }
   .badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; display: inline-block; }
   .badge-high { background: var(--green-light); color: var(--green-text); }
-  .badge-mid { background: #FAEEDA; color: #633806; }
+  .badge-mid  { background: #FAEEDA; color: #633806; }
+  .badge-on   { background: var(--blue-light); color: var(--blue-text); }
+  .badge-hot  { background: #FEF2F2; color: #991B1B; }
+  .badge-nego { background: #F5F3FF; color: #5B21B6; }
   .td-actions { display: flex; gap: 6px; }
 
-  /* modal */
+  /* 방문자 */
+  .visit-row { display: grid; grid-template-columns: 1fr 3fr 80px; gap: 12px; align-items: center; padding: 10px 16px; border-bottom: 0.5px solid var(--gray-border); font-size: 13px; }
+  .visit-row.head { background: var(--gray-bg); font-size: 12px; font-weight: 600; color: var(--text-sub); }
+  .visit-bar-fill { height: 6px; background: var(--green-light); border-radius: 3px; }
+  .visit-bar-fill.today { background: var(--green); }
+  .visit-count { font-weight: 600; text-align: right; }
+
+  /* 클릭 집계 */
+  .click-bar-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+  .click-bar-name { width: 140px; font-size: 13px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .click-bar-track { flex: 1; background: var(--gray-bg); border-radius: 4px; height: 20px; overflow: hidden; }
+  .click-bar-fill { height: 100%; background: var(--green-light); border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; color: var(--green-text); font-weight: 600; min-width: 24px; }
+  .click-bar-fill.rank1 { background: var(--green); color: white; }
+  .click-bar-fill.rank2 { background: #4BC49A; color: white; }
+  .click-bar-fill.rank3 { background: #7DD4B8; color: white; }
+  .click-bar-count { width: 40px; text-align: right; font-size: 13px; font-weight: 700; }
+  .interest-high { background: var(--green-light); color: var(--green-text); padding: 2px 9px; border-radius: 10px; font-size: 11px; }
+  .interest-mid  { background: #FAEEDA; color: #633806; padding: 2px 9px; border-radius: 10px; font-size: 11px; }
+  .interest-low  { background: var(--gray-bg); color: var(--text-sub); padding: 2px 9px; border-radius: 10px; font-size: 11px; }
+  .rank-badge { width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+  .rank-1 { background: #FFD700; color: #5A4400; }
+  .rank-2 { background: #C0C0C0; color: #3A3A3A; }
+  .rank-3 { background: #CD7F32; color: white; }
+  .rank-other { background: var(--gray-bg); color: var(--text-sub); font-size: 11px; }
+
+  /* 모달 */
   .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; align-items: center; justify-content: center; z-index: 200; padding: 20px; }
   .modal-bg.open { display: flex; }
   .modal { background: white; border-radius: 14px; padding: 24px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; }
@@ -87,172 +127,147 @@
   textarea { resize: vertical; min-height: 72px; }
   .modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
 
-  /* visitor table */
-  .visit-row { display: grid; grid-template-columns: 1fr 3fr 80px; gap: 12px; align-items: center; padding: 10px 16px; border-bottom: 0.5px solid var(--gray-border); font-size: 13px; }
-  .visit-row.head { background: var(--gray-bg); font-size: 12px; font-weight: 600; color: var(--text-sub); }
-  .visit-bar-fill { height: 6px; background: var(--green-light); border-radius: 3px; }
-  .visit-bar-fill.today { background: var(--green); }
-  .visit-count { font-weight: 600; text-align: right; }
-  .empty-state { padding: 40px; text-align: center; color: var(--text-sub); font-size: 13px; }
-
-  /* 클릭 집계 차트 */
-  .click-bar-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
-  .click-bar-name { width: 130px; font-size: 13px; color: var(--text); flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .click-bar-track { flex: 1; background: var(--gray-bg); border-radius: 4px; height: 20px; overflow: hidden; }
-  .click-bar-fill { height: 100%; background: var(--green-light); border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; color: var(--green-text); font-weight: 600; transition: width 0.4s; min-width: 24px; }
-  .click-bar-fill.rank1 { background: var(--green); color: white; }
-  .click-bar-fill.rank2 { background: #4BC49A; color: white; }
-  .click-bar-fill.rank3 { background: #7DD4B8; color: white; }
-  .click-bar-count { width: 40px; text-align: right; font-size: 13px; font-weight: 700; color: var(--text); }
-
-  /* 관심도 배지 */
-  .interest-high { background: var(--green-light); color: var(--green-text); padding: 2px 9px; border-radius: 10px; font-size: 11px; }
-  .interest-mid  { background: #FAEEDA; color: #633806; padding: 2px 9px; border-radius: 10px; font-size: 11px; }
-  .interest-low  { background: var(--gray-bg); color: var(--text-sub); padding: 2px 9px; border-radius: 10px; font-size: 11px; }
-  .rank-badge { width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
-  .rank-1 { background: #FFD700; color: #5A4400; }
-  .rank-2 { background: #C0C0C0; color: #3A3A3A; }
-  .rank-3 { background: #CD7F32; color: white; }
-  .rank-other { background: var(--gray-bg); color: var(--text-sub); font-size: 11px; }
-
-  /* 양도양수 상태 배지 */
-  .badge-on   { background: #EFF6FF; color: #1E3A8A; }
-  .badge-hot  { background: #FEF2F2; color: #991B1B; }
-  .badge-nego { background: #F5F3FF; color: #5B21B6; }
+  .empty-state { padding: 40px; text-align: center; color: var(--text-sub); font-size: 13px; line-height: 1.6; }
+  .loading-inline { padding: 30px; text-align: center; color: var(--text-sub); font-size: 13px; }
+  ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: var(--gray-border); border-radius: 2px; }
 </style>
 </head>
 <body>
 
-<div class="admin-header">
-  <span class="admin-logo">본죽 관리자</span>
-  <span class="admin-badge">ADMIN</span>
-  <a class="header-link" href="index.html" target="_blank">← 메인 사이트 보기</a>
+<!-- ── 로그인 화면 ── -->
+<div class="login-wrap" id="login-ui">
+  <div class="login-box">
+    <div class="login-logo"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>
+    <div class="login-title">관리자 로그인</div>
+    <div class="login-sub">본죽 창업 탐색기 관리자 전용 페이지입니다</div>
+    <div class="login-field"><label>이메일</label><input type="email" id="login-email" placeholder="admin@example.com" /></div>
+    <div class="login-field"><label>비밀번호</label><input type="password" id="login-pw" placeholder="비밀번호 입력" /></div>
+    <button class="login-btn" id="login-btn" onclick="doLogin()">로그인</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
 </div>
 
-<div class="tabs">
-  <div class="tab active" onclick="switchTab('visitors', this)">방문자 통계</div>
-  <div class="tab" onclick="switchTab('clicks', this)">상권별 클릭 집계</div>
-  <div class="tab" onclick="switchTab('areas', this)">상권 관리</div>
-  <div class="tab" onclick="switchTab('transfers', this)">양도양수 관리</div>
-</div>
-
-<!-- 방문자 통계 -->
-<div class="content">
-  <div class="section active" id="sec-visitors">
-    <div class="stat-row" id="summary-cards"></div>
-    <div class="chart-wrap">
-      <div class="chart-title">최근 30일 방문자</div>
-      <div class="chart-bars" id="chart-bars"></div>
+<!-- ── 관리자 UI ── -->
+<div id="admin-ui">
+  <div class="admin-header">
+    <span class="admin-logo">본죽 관리자</span>
+    <span class="admin-badge">ADMIN</span>
+    <div class="header-right">
+      <span class="header-user" id="header-user"></span>
+      <a class="header-link" href="index.html" target="_blank">← 메인 사이트</a>
+      <button class="header-link" onclick="doLogout()">로그아웃</button>
     </div>
-    <div class="table-wrap">
-      <div class="table-header">
-        <span class="table-title">일별 방문자 상세</span>
-        <div style="display:flex;gap:8px">
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('visitors',this)">방문자 통계</div>
+    <div class="tab" onclick="switchTab('clicks',this)">상권별 클릭 집계</div>
+    <div class="tab" onclick="switchTab('areas',this)">상권 관리</div>
+    <div class="tab" onclick="switchTab('transfers',this)">양도양수 관리</div>
+  </div>
+
+  <div class="content">
+
+    <!-- 방문자 통계 -->
+    <div class="section active" id="sec-visitors">
+      <div class="stat-row" id="summary-cards"><div class="loading-inline">불러오는 중...</div></div>
+      <div class="chart-wrap">
+        <div class="chart-title">최근 30일 방문자</div>
+        <div class="chart-bars" id="chart-bars"></div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-header">
+          <span class="table-title">일별 방문자 상세</span>
           <button class="btn btn-outline" onclick="exportVisits()">CSV 내보내기</button>
-          <button class="btn btn-red" onclick="clearVisits()">데이터 초기화</button>
         </div>
+        <div class="visit-row head"><span>날짜</span><span>방문자</span><span style="text-align:right">수</span></div>
+        <div id="visit-table"><div class="loading-inline">불러오는 중...</div></div>
       </div>
-      <div class="visit-row head"><span>날짜</span><span>방문자</span><span style="text-align:right">수</span></div>
-      <div id="visit-table"></div>
     </div>
-  </div>
 
-  <!-- 상권별 클릭 집계 -->
-  <div class="section" id="sec-clicks">
-    <div class="stat-row" id="click-summary-cards"></div>
-    <div class="chart-wrap">
-      <div class="chart-title" style="display:flex;justify-content:space-between;align-items:center">
-        <span>상권별 클릭 수 순위</span>
-        <div style="display:flex;gap:8px">
+    <!-- 클릭 집계 -->
+    <div class="section" id="sec-clicks">
+      <div class="stat-row" id="click-summary-cards"><div class="loading-inline">불러오는 중...</div></div>
+      <div class="chart-wrap">
+        <div class="chart-title"><span>상권별 클릭 수 순위</span>
           <button class="btn btn-outline" onclick="exportClicks()">CSV 내보내기</button>
-          <button class="btn btn-red" onclick="clearClicks()">초기화</button>
         </div>
+        <div id="click-chart"></div>
       </div>
-      <div id="click-chart"></div>
-    </div>
-    <div class="table-wrap">
-      <div class="table-header">
-        <span class="table-title">상권별 클릭 상세</span>
-      </div>
-      <table>
-        <thead><tr>
-          <th style="width:40px">순위</th>
-          <th>상권명</th>
-          <th>클릭 수</th>
-          <th>비율</th>
-          <th>관심도</th>
-        </tr></thead>
-        <tbody id="click-tbody"></tbody>
-      </table>
-      <div class="empty-state" id="click-empty" style="display:none">
-        아직 클릭 데이터가 없습니다.<br>메인 사이트에서 상권 카드를 클릭하면 자동으로 기록됩니다.
+      <div class="table-wrap">
+        <div class="table-header"><span class="table-title">상권별 클릭 상세</span></div>
+        <table><thead><tr><th style="width:40px">순위</th><th>상권명</th><th>클릭 수</th><th>비율</th><th>관심도</th></tr></thead>
+          <tbody id="click-tbody"></tbody>
+        </table>
+        <div class="empty-state" id="click-empty" style="display:none">아직 클릭 데이터가 없습니다.<br>메인 사이트에서 상권 카드를 클릭하면 자동으로 기록됩니다.</div>
       </div>
     </div>
-  </div>
 
-  <!-- 상권 관리 -->
-  <div class="section" id="sec-areas">
-    <div class="table-wrap">
-      <div class="table-header">
-        <span class="table-title">상권 목록</span>
-        <div style="display:flex;gap:8px">
-          <button class="btn btn-outline" onclick="resetAreas()">기본값 복원</button>
-          <button class="btn btn-green" onclick="openModal()">+ 상권 추가</button>
+    <!-- 상권 관리 -->
+    <div class="section" id="sec-areas">
+      <div class="table-wrap">
+        <div class="table-header">
+          <span class="table-title">상권 목록</span>
+          <button class="btn btn-green" onclick="openAreaModal()">+ 상권 추가</button>
         </div>
+        <table><thead><tr><th>상권명</th><th>유형</th><th>추천도</th><th>임대료</th><th>경쟁도</th><th></th></tr></thead>
+          <tbody id="area-tbody"><tr><td colspan="6" class="loading-inline">불러오는 중...</td></tr></tbody>
+        </table>
       </div>
-      <table>
-        <thead><tr>
-          <th>상권명</th><th>유형</th><th>추천도</th><th>예상 매출</th><th>임대료</th><th>경쟁도</th><th></th>
-        </tr></thead>
-        <tbody id="area-tbody"></tbody>
-      </table>
     </div>
-  </div>
-</div>
 
-  <!-- 양도양수 관리 -->
-  <div class="section" id="sec-transfers">
-    <div class="table-wrap">
-      <div class="table-header">
-        <span class="table-title">양도양수 매물 목록</span>
-        <div style="display:flex;gap:8px">
-          <button class="btn btn-outline" onclick="resetTransfers()">기본값 복원</button>
+    <!-- 양도양수 관리 -->
+    <div class="section" id="sec-transfers">
+      <div class="table-wrap">
+        <div class="table-header">
+          <span class="table-title">양도양수 매물 목록</span>
           <button class="btn btn-green" onclick="openTransferModal()">+ 매물 추가</button>
         </div>
+        <table><thead><tr><th>매장명</th><th>지역</th><th>규모</th><th>오픈연도</th><th>권리금</th><th>임대료</th><th>상태</th><th></th></tr></thead>
+          <tbody id="transfer-tbody"><tr><td colspan="8" class="loading-inline">불러오는 중...</td></tr></tbody>
+        </table>
+        <div class="empty-state" id="transfer-empty" style="display:none">등록된 매물이 없습니다.</div>
       </div>
-      <table>
-        <thead><tr>
-          <th>매장명</th><th>지역</th><th>규모</th><th>오픈연도</th><th>권리금</th><th>임대료</th><th>상태</th><th></th>
-        </tr></thead>
-        <tbody id="transfer-tbody"></tbody>
-      </table>
-      <div class="empty-state" id="transfer-empty" style="display:none">등록된 매물이 없습니다.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 상권 모달 -->
+<div class="modal-bg" id="area-modal-bg" onclick="if(event.target===this)closeAreaModal()">
+  <div class="modal">
+    <div class="modal-title" id="area-modal-title">상권 추가</div>
+    <div class="form-grid">
+      <div class="form-group full"><label>상권명 *</label><input id="f-name" placeholder="예: 강남 역삼" /></div>
+      <div class="form-group"><label>유형 *</label>
+        <select id="f-type"><option value="office">오피스</option><option value="residential">주거단지</option><option value="campus">대학가</option><option value="transit">교통요지</option><option value="hospital">병원·실버</option></select>
+      </div>
+      <div class="form-group"><label>추천도 *</label>
+        <select id="f-score"><option value="high">추천</option><option value="mid">검토</option></select>
+      </div>
+      <div class="form-group"><label>하루 유동인구</label><input id="f-pop" placeholder="예: 40만+" /></div>
+      <div class="form-group"><label>월 임대료(33㎡)</label><input id="f-rent" placeholder="예: 280만원~" /></div>
+      <div class="form-group"><label>경쟁도</label><input id="f-comp" placeholder="낮음 / 보통 / 높음" /></div>
+      <div class="form-group full"><label>상권 설명</label><textarea id="f-reason" placeholder="이 상권의 특징과 추천 이유를 입력하세요"></textarea></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeAreaModal()">취소</button>
+      <button class="btn btn-green" onclick="saveArea()">저장</button>
     </div>
   </div>
 </div>
 
-<!-- 양도양수 추가/수정 모달 -->
-<div class="modal-bg" id="transfer-modal-bg" onclick="closeTransferModalBg(event)">
+<!-- 양도양수 모달 -->
+<div class="modal-bg" id="transfer-modal-bg" onclick="if(event.target===this)closeTransferModal()">
   <div class="modal">
     <div class="modal-title" id="transfer-modal-title">매물 추가</div>
     <div class="form-grid">
       <div class="form-group full"><label>매장명 *</label><input id="tf-name" placeholder="예: 본죽&비빔밥 마포공덕점" /></div>
-      <div class="form-group">
-        <label>지역 *</label>
-        <select id="tf-region">
-          <option value="서울">서울</option>
-          <option value="경기">경기</option>
-          <option value="인천">인천</option>
-          <option value="지방">지방</option>
-        </select>
+      <div class="form-group"><label>지역 *</label>
+        <select id="tf-region"><option value="서울">서울</option><option value="경기">경기</option><option value="인천">인천</option><option value="지방">지방</option></select>
       </div>
-      <div class="form-group">
-        <label>매물 상태 *</label>
-        <select id="tf-status">
-          <option value="on">양도 가능</option>
-          <option value="hot">급매</option>
-          <option value="nego">협의 중</option>
-        </select>
+      <div class="form-group"><label>매물 상태 *</label>
+        <select id="tf-status"><option value="on">양도 가능</option><option value="hot">급매</option><option value="nego">협의 중</option></select>
       </div>
       <div class="form-group"><label>매장 규모</label><input id="tf-area" placeholder="예: 15평" /></div>
       <div class="form-group"><label>오픈연도</label><input id="tf-open" placeholder="예: 2020년" /></div>
@@ -267,159 +282,98 @@
   </div>
 </div>
 
-<!-- 상권 추가/수정 모달 -->
-<div class="modal-bg" id="modal-bg" onclick="closeModalBg(event)">
-  <div class="modal">
-    <div class="modal-title" id="modal-title">상권 추가</div>
-    <div class="form-grid">
-      <div class="form-group"><label>상권명 *</label><input id="f-name" placeholder="예: 강남 역삼" /></div>
-      <div class="form-group">
-        <label>유형 *</label>
-        <select id="f-type">
-          <option value="office">오피스</option>
-          <option value="residential">주거단지</option>
-          <option value="campus">대학가</option>
-          <option value="transit">교통요지</option>
-          <option value="hospital">병원·실버</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>추천도 *</label>
-        <select id="f-score"><option value="high">추천</option><option value="mid">검토</option></select>
-      </div>
-      <div class="form-group"><label>하루 유동인구</label><input id="f-pop" placeholder="예: 40만+" /></div>
-      <div class="form-group"><label>예상 월 매출</label><input id="f-rev" placeholder="예: 2,800만원" /></div>
-      <div class="form-group"><label>월 임대료(33㎡)</label><input id="f-rent" placeholder="예: 280만원~" /></div>
-      <div class="form-group"><label>경쟁도</label><input id="f-comp" placeholder="낮음 / 보통 / 높음" /></div>
-      <div class="form-group"><label>위도</label><input id="f-lat" type="number" step="0.0001" placeholder="37.5007" /></div>
-      <div class="form-group"><label>경도</label><input id="f-lng" type="number" step="0.0001" placeholder="127.0369" /></div>
-      <div class="form-group full"><label>상권 설명</label><textarea id="f-reason" placeholder="이 상권의 특징과 추천 이유를 입력하세요"></textarea></div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal()">취소</button>
-      <button class="btn btn-green" onclick="saveArea()">저장</button>
-    </div>
-  </div>
-</div>
+<script type="module">
+import { initializeApp }                           from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+                                                   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc }
+                                                   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-<script>
-const TYPE_LABEL = { office:'오피스', residential:'주거단지', campus:'대학가', transit:'교통요지', hospital:'병원·실버' };
-const DEFAULT_AREAS = [
-  { id:1, name:'강남 역삼', lat:37.5007, lng:127.0369, type:'office', score:'high', pop:'40만+', rev:'2,800만원', rent:'280만원~', comp:'낮음', reason:'대형 오피스 밀집 지역으로 평일 직장인 점심 수요가 안정적입니다.' },
-  { id:2, name:'여의도', lat:37.5219, lng:126.9245, type:'office', score:'high', pop:'30만+', rev:'2,500만원', rent:'250만원~', comp:'보통', reason:'금융사·방송사 직원 수요로 점심 피크 집중도가 높습니다.' },
-  { id:3, name:'종로 인사동', lat:37.5726, lng:126.9869, type:'transit', score:'high', pop:'25만+', rev:'2,200만원', rent:'200만원~', comp:'낮음', reason:'관광객과 직장인 복합 수요 지역입니다.' },
-  { id:4, name:'신촌·홍대', lat:37.5563, lng:126.9378, type:'campus', score:'mid', pop:'35만+', rev:'2,000만원', rent:'230만원~', comp:'높음', reason:'대학생 수요가 풍부하지만 경쟁이 심합니다.' },
-  { id:5, name:'노원 중계동', lat:37.6541, lng:127.0563, type:'residential', score:'high', pop:'18만+', rev:'1,900만원', rent:'130만원~', comp:'낮음', reason:'대단지 아파트 밀집 지역으로 가족 배달 수요가 강세입니다.' },
-  { id:6, name:'목동 신정동', lat:37.5298, lng:126.8739, type:'residential', score:'high', pop:'16만+', rev:'1,800만원', rent:'120만원~', comp:'낮음', reason:'중산층 주거 밀집 지역으로 30-40대 주부층 수요가 안정적입니다.' },
-  { id:7, name:'건대 어린이대공원', lat:37.5407, lng:127.0693, type:'campus', score:'mid', pop:'22만+', rev:'2,000만원', rent:'180만원~', comp:'보통', reason:'대학가와 가족 나들이객 복합 상권입니다.' },
-  { id:8, name:'잠실 송파', lat:37.5134, lng:127.1010, type:'transit', score:'high', pop:'28만+', rev:'2,300만원', rent:'200만원~', comp:'보통', reason:'롯데월드·스포츠파크 인근으로 가족 단위·직장인 복합 수요입니다.' },
-  { id:9, name:'수유·방학', lat:37.6487, lng:127.0231, type:'hospital', score:'mid', pop:'14만+', rev:'1,600만원', rent:'100만원~', comp:'낮음', reason:'노인 인구 비율이 높아 건강식 수요가 유망합니다.' },
-  { id:10, name:'마포 공덕', lat:37.5431, lng:126.9538, type:'office', score:'high', pop:'20만+', rev:'2,100만원', rent:'160만원~', comp:'낮음', reason:'신흥 오피스 타운으로 임대료가 강남 대비 40% 저렴합니다.' },
-];
+const firebaseConfig = {
+  apiKey: "AIzaSyDHv--cwvQSekKpHSVfbGDogu9Av8Pj0ZU",
+  authDomain: "bonjuk-franchise.firebaseapp.com",
+  projectId: "bonjuk-franchise",
+  storageBucket: "bonjuk-franchise.firebasestorage.app",
+  messagingSenderId: "223263554911",
+  appId: "1:223263554911:web:ca47100738eba4dbc68aea"
+};
 
-// ── 탭 ──
-function switchTab(name, el) {
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); el.classList.add('active');
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.getElementById('sec-'+name).classList.add('active');
-  if(name==='visitors')  renderVisitors();
-  if(name==='clicks')    renderClicks();
-  if(name==='areas')     renderAreas();
-  if(name==='transfers') renderTransfers();
-}
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
 
-// ── 상권별 클릭 집계 ──
-function getClicks() {
-  try { return JSON.parse(localStorage.getItem('bonjuk_area_clicks') || '{}'); } catch(e) { return {}; }
-}
+const TYPE_LABEL   = { office:'오피스', residential:'주거단지', campus:'대학가', transit:'교통요지', hospital:'병원·실버' };
+const STATUS_LABEL = { on:'양도 가능', hot:'급매', nego:'협의 중' };
+const STATUS_BADGE = { on:'badge-on', hot:'badge-hot', nego:'badge-nego' };
 
-function renderClicks() {
-  const raw = getClicks();
-  const list = Object.entries(raw)
-    .map(([id, v]) => ({ id, name: v.name, count: v.count }))
-    .sort((a, b) => b.count - a.count);
+let visitsData = {}, clicksData = {}, editAreaId = null, editTransferId = null;
 
-  const total = list.reduce((s, v) => s + v.count, 0);
-  const top = list[0] || null;
-
-  // 요약 카드
-  document.getElementById('click-summary-cards').innerHTML = `
-    <div class="stat-card highlight"><div class="stat-card-label">총 클릭 수</div><div class="stat-card-value">${total}</div><div class="stat-card-sub">전체 상권 합계</div></div>
-    <div class="stat-card"><div class="stat-card-label">집계 상권 수</div><div class="stat-card-value">${list.length}</div><div class="stat-card-sub">클릭된 상권</div></div>
-    <div class="stat-card"><div class="stat-card-label">1위 상권</div><div class="stat-card-value" style="font-size:18px">${top ? top.name : '-'}</div><div class="stat-card-sub">${top ? top.count + '회 클릭' : '데이터 없음'}</div></div>
-    <div class="stat-card"><div class="stat-card-label">평균 클릭</div><div class="stat-card-value">${list.length ? Math.round(total/list.length) : 0}</div><div class="stat-card-sub">상권당 평균</div></div>`;
-
-  if (!list.length) {
-    document.getElementById('click-chart').innerHTML = '';
-    document.getElementById('click-tbody').innerHTML = '';
-    document.getElementById('click-empty').style.display = 'block';
-    return;
+// ── 인증 상태 감지 ──
+onAuthStateChanged(auth, user => {
+  if (user) {
+    document.getElementById('login-ui').style.display   = 'none';
+    document.getElementById('admin-ui').style.display   = 'block';
+    document.getElementById('header-user').textContent  = user.email;
+    loadVisitors();
+  } else {
+    document.getElementById('login-ui').style.display   = 'flex';
+    document.getElementById('admin-ui').style.display   = 'none';
   }
-  document.getElementById('click-empty').style.display = 'none';
+});
 
-  // 가로 막대 차트
-  const maxCount = list[0].count;
-  document.getElementById('click-chart').innerHTML = list.slice(0,10).map((item, i) => {
-    const pct = Math.round((item.count / maxCount) * 100);
-    const rankClass = i===0?'rank1':i===1?'rank2':i===2?'rank3':'';
-    return `<div class="click-bar-row">
-      <div class="click-bar-name" title="${item.name}">${item.name}</div>
-      <div class="click-bar-track">
-        <div class="click-bar-fill ${rankClass}" style="width:${Math.max(pct,4)}%">${item.count}회</div>
-      </div>
-      <div class="click-bar-count">${item.count}</div>
-    </div>`;
-  }).join('');
-
-  // 상세 테이블
-  function interestLabel(count, max) {
-    const r = count / max;
-    if (r >= 0.6) return '<span class="interest-high">관심 높음</span>';
-    if (r >= 0.3) return '<span class="interest-mid">관심 보통</span>';
-    return '<span class="interest-low">관심 낮음</span>';
+// ── 로그인 / 로그아웃 ──
+window.doLogin = async function() {
+  const email = document.getElementById('login-email').value.trim();
+  const pw    = document.getElementById('login-pw').value;
+  const btn   = document.getElementById('login-btn');
+  const err   = document.getElementById('login-error');
+  err.textContent = '';
+  if (!email || !pw) { err.textContent = '이메일과 비밀번호를 입력해주세요.'; return; }
+  btn.disabled = true; btn.textContent = '로그인 중...';
+  try {
+    await signInWithEmailAndPassword(auth, email, pw);
+  } catch(e) {
+    const msg = { 'auth/invalid-credential':'이메일 또는 비밀번호가 올바르지 않습니다.', 'auth/too-many-requests':'로그인 시도가 너무 많습니다. 잠시 후 다시 시도해주세요.' };
+    err.textContent = msg[e.code] || '로그인에 실패했습니다. 다시 시도해주세요.';
+  } finally {
+    btn.disabled = false; btn.textContent = '로그인';
   }
-  function rankBadge(i) {
-    if (i===0) return '<span class="rank-badge rank-1">1</span>';
-    if (i===1) return '<span class="rank-badge rank-2">2</span>';
-    if (i===2) return '<span class="rank-badge rank-3">3</span>';
-    return `<span class="rank-badge rank-other">${i+1}</span>`;
-  }
-  document.getElementById('click-tbody').innerHTML = list.map((item, i) => `
-    <tr>
-      <td>${rankBadge(i)}</td>
-      <td><strong>${item.name}</strong></td>
-      <td><strong>${item.count}회</strong></td>
-      <td>${total ? Math.round(item.count/total*100) : 0}%</td>
-      <td>${interestLabel(item.count, maxCount)}</td>
-    </tr>`).join('');
-}
+};
+window.doLogout = () => signOut(auth);
 
-function exportClicks() {
-  const raw = getClicks();
-  const list = Object.entries(raw).map(([,v])=>v).sort((a,b)=>b.count-a.count);
-  const csv = '\uFEFF' + ['상권명,클릭수', ...list.map(v=>`${v.name},${v.count}`)].join('\n');
-  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
-  a.download = '상권별클릭집계.csv'; a.click();
-}
+// Enter 키 로그인
+['login-email','login-pw'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => { if(e.key==='Enter') window.doLogin(); });
+});
 
-function clearClicks() {
-  if (!confirm('상권 클릭 데이터를 모두 삭제할까요?')) return;
-  localStorage.removeItem('bonjuk_area_clicks'); renderClicks();
-}
+// ── 탭 전환 ──
+window.switchTab = function(name, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); el.classList.add('active');
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  if (name === 'visitors')  loadVisitors();
+  if (name === 'clicks')    loadClicks();
+  if (name === 'areas')     loadAreas();
+  if (name === 'transfers') loadTransfers();
+};
 
 // ── 방문자 통계 ──
-function getVisits() {
-  try { return JSON.parse(localStorage.getItem('bonjuk_visits') || '{}'); } catch(e) { return {}; }
+async function loadVisitors() {
+  try {
+    const snap = await getDoc(doc(db, 'stats', 'visits'));
+    visitsData = snap.exists() ? { ...snap.data() } : {};
+    delete visitsData.lastVisit;
+  } catch(e) { visitsData = {}; }
+  renderVisitors();
 }
 
 function renderVisitors() {
-  const visits = getVisits();
   const today = new Date().toISOString().slice(0,10);
-  const keys = Object.keys(visits).sort().reverse();
-  const todayCount = visits[today] || 0;
-  const total = Object.values(visits).reduce((a,b)=>a+b,0);
-  const last7 = keys.slice(0,7).reduce((a,k)=>a+(visits[k]||0),0);
-  const avg = keys.length ? Math.round(total/keys.length) : 0;
+  const keys  = Object.keys(visitsData).filter(k => /^\d{4}-\d{2}-\d{2}$/.test(k)).sort().reverse();
+  const todayCount = visitsData[today] || 0;
+  const total = keys.reduce((s,k) => s+(visitsData[k]||0), 0);
+  const last7 = keys.slice(0,7).reduce((s,k) => s+(visitsData[k]||0), 0);
+  const avg   = keys.length ? Math.round(total/keys.length) : 0;
 
   document.getElementById('summary-cards').innerHTML = `
     <div class="stat-card highlight"><div class="stat-card-label">오늘 방문자</div><div class="stat-card-value">${todayCount}</div><div class="stat-card-sub">${today}</div></div>
@@ -427,227 +381,161 @@ function renderVisitors() {
     <div class="stat-card"><div class="stat-card-label">누적 방문자</div><div class="stat-card-value">${total}</div><div class="stat-card-sub">총 ${keys.length}일</div></div>
     <div class="stat-card"><div class="stat-card-label">일 평균</div><div class="stat-card-value">${avg}</div><div class="stat-card-sub">전체 기간</div></div>`;
 
-  // 차트 (최근 30일)
   const last30 = [];
-  for(let i=29;i>=0;i--){
-    const d = new Date(); d.setDate(d.getDate()-i);
-    const k = d.toISOString().slice(0,10);
-    last30.push({date:k,count:visits[k]||0});
-  }
+  for(let i=29;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); const k=d.toISOString().slice(0,10); last30.push({date:k,count:visitsData[k]||0}); }
   const maxV = Math.max(...last30.map(d=>d.count), 1);
   document.getElementById('chart-bars').innerHTML = last30.map(d => {
     const pct = Math.round((d.count/maxV)*100);
-    const isToday = d.date===today;
-    const label = d.date.slice(5);
-    return `<div class="bar-col">
-      <div class="bar-val">${d.count||''}</div>
-      <div class="bar ${isToday?'today':''}" style="height:${Math.max(pct,2)}%" title="${d.date}: ${d.count}명"></div>
-      <div class="bar-label">${label}</div>
-    </div>`;
+    return `<div class="bar-col"><div class="bar-val">${d.count||''}</div><div class="bar ${d.date===today?'today':''}" style="height:${Math.max(pct,2)}%" title="${d.date}: ${d.count}명"></div><div class="bar-label">${d.date.slice(5)}</div></div>`;
   }).join('');
 
-  // 테이블
-  if(!keys.length){document.getElementById('visit-table').innerHTML='<div class="empty-state">아직 방문 데이터가 없습니다.<br>메인 사이트를 방문하면 자동으로 기록됩니다.</div>';return;}
-  document.getElementById('visit-table').innerHTML = keys.map(k=>{
-    const pct = Math.round((visits[k]/Math.max(...Object.values(visits)))*100);
-    const isToday = k===today;
-    return `<div class="visit-row">
-      <span style="font-weight:${isToday?'700':'400'};color:${isToday?'var(--green)':'var(--text)'}">${k}${isToday?' (오늘)':''}</span>
-      <span><div class="visit-bar-fill ${isToday?'today':''}" style="width:${pct}%"></div></span>
-      <span class="visit-count">${visits[k]}</span>
-    </div>`;
+  if(!keys.length){ document.getElementById('visit-table').innerHTML='<div class="empty-state">아직 방문 데이터가 없습니다.<br>메인 사이트를 방문하면 자동으로 기록됩니다.</div>'; return; }
+  const maxVal = Math.max(...keys.map(k=>visitsData[k]||0));
+  document.getElementById('visit-table').innerHTML = keys.map(k => {
+    const pct=Math.round(((visitsData[k]||0)/maxVal)*100), isToday=k===today;
+    return `<div class="visit-row"><span style="font-weight:${isToday?700:400};color:${isToday?'var(--green)':'var(--text)'}">${k}${isToday?' (오늘)':''}</span><span><div class="visit-bar-fill ${isToday?'today':''}" style="width:${pct}%"></div></span><span class="visit-count">${visitsData[k]||0}</span></div>`;
   }).join('');
 }
 
-function exportVisits() {
-  const visits = getVisits();
-  const rows = [['날짜','방문자수'], ...Object.entries(visits).sort()];
-  const csv = '\uFEFF' + rows.map(r=>r.join(',')).join('\n');
-  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
-  a.download = '방문자통계.csv'; a.click();
+window.exportVisits = function() {
+  const keys = Object.keys(visitsData).filter(k=>/^\d{4}-\d{2}-\d{2}$/.test(k)).sort();
+  const csv='\uFEFF'+['날짜,방문자수',...keys.map(k=>`${k},${visitsData[k]||0}`)].join('\n');
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='방문자통계.csv'; a.click();
+};
+
+// ── 클릭 집계 ──
+async function loadClicks() {
+  try {
+    const snap = await getDoc(doc(db,'stats','area_clicks'));
+    clicksData = snap.exists() ? snap.data() : {};
+  } catch(e) { clicksData = {}; }
+  renderClicks();
 }
 
-function clearVisits() {
-  if(!confirm('방문자 데이터를 모두 삭제할까요?')) return;
-  localStorage.removeItem('bonjuk_visits'); renderVisitors();
+function renderClicks() {
+  const list  = Object.entries(clicksData).map(([id,v])=>({id,name:v.name||id,count:v.count||0})).sort((a,b)=>b.count-a.count);
+  const total = list.reduce((s,v)=>s+v.count,0);
+  const top   = list[0]||null;
+
+  document.getElementById('click-summary-cards').innerHTML = `
+    <div class="stat-card highlight"><div class="stat-card-label">총 클릭 수</div><div class="stat-card-value">${total}</div><div class="stat-card-sub">전체 상권 합계</div></div>
+    <div class="stat-card"><div class="stat-card-label">집계 상권 수</div><div class="stat-card-value">${list.length}</div><div class="stat-card-sub">클릭된 상권</div></div>
+    <div class="stat-card"><div class="stat-card-label">1위 상권</div><div class="stat-card-value" style="font-size:18px">${top?top.name:'-'}</div><div class="stat-card-sub">${top?top.count+'회 클릭':'데이터 없음'}</div></div>
+    <div class="stat-card"><div class="stat-card-label">평균 클릭</div><div class="stat-card-value">${list.length?Math.round(total/list.length):0}</div><div class="stat-card-sub">상권당 평균</div></div>`;
+
+  if(!list.length){ document.getElementById('click-chart').innerHTML=''; document.getElementById('click-tbody').innerHTML=''; document.getElementById('click-empty').style.display='block'; return; }
+  document.getElementById('click-empty').style.display='none';
+  const maxC=list[0].count;
+  document.getElementById('click-chart').innerHTML=list.slice(0,10).map((item,i)=>{
+    const pct=Math.round((item.count/maxC)*100), rc=i===0?'rank1':i===1?'rank2':i===2?'rank3':'';
+    return `<div class="click-bar-row"><div class="click-bar-name" title="${item.name}">${item.name}</div><div class="click-bar-track"><div class="click-bar-fill ${rc}" style="width:${Math.max(pct,4)}%">${item.count}회</div></div><div class="click-bar-count">${item.count}</div></div>`;
+  }).join('');
+  const iLabel=(c,m)=>{ const r=c/m; return r>=0.6?'<span class="interest-high">관심 높음</span>':r>=0.3?'<span class="interest-mid">관심 보통</span>':'<span class="interest-low">관심 낮음</span>'; };
+  const rBadge=i=>i===0?'<span class="rank-badge rank-1">1</span>':i===1?'<span class="rank-badge rank-2">2</span>':i===2?'<span class="rank-badge rank-3">3</span>':`<span class="rank-badge rank-other">${i+1}</span>`;
+  document.getElementById('click-tbody').innerHTML=list.map((item,i)=>`<tr><td>${rBadge(i)}</td><td><strong>${item.name}</strong></td><td>${item.count}회</td><td>${total?Math.round(item.count/total*100):0}%</td><td>${iLabel(item.count,maxC)}</td></tr>`).join('');
 }
+
+window.exportClicks = function() {
+  const list=Object.entries(clicksData).map(([,v])=>v).sort((a,b)=>b.count-a.count);
+  const csv='\uFEFF'+['상권명,클릭수',...list.map(v=>`${v.name},${v.count}`)].join('\n');
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='상권별클릭집계.csv'; a.click();
+};
 
 // ── 상권 관리 ──
-function getAreas() {
-  try { const s=localStorage.getItem('bonjuk_areas'); return s?JSON.parse(s):[...DEFAULT_AREAS]; } catch(e){return[...DEFAULT_AREAS];}
-}
-function saveAreas(areas) { localStorage.setItem('bonjuk_areas', JSON.stringify(areas)); }
-
-function renderAreas() {
-  const areas = getAreas();
-  document.getElementById('area-tbody').innerHTML = areas.map(a=>`
-    <tr>
-      <td><strong>${a.name}</strong></td>
-      <td>${TYPE_LABEL[a.type]||a.type}</td>
-      <td><span class="badge ${a.score==='high'?'badge-high':'badge-mid'}">${a.score==='high'?'추천':'검토'}</span></td>
-      <td>${a.rev}</td>
-      <td>${a.rent}</td>
-      <td>${a.comp}</td>
-      <td><div class="td-actions">
-        <button class="btn btn-outline" onclick="editArea(${a.id})">수정</button>
-        <button class="btn btn-red" onclick="deleteArea(${a.id})">삭제</button>
-      </div></td>
-    </tr>`).join('');
+async function loadAreas() {
+  const snap  = await getDocs(collection(db,'areas'));
+  const areas = snap.docs.map(d=>({id:d.id,...d.data()}));
+  document.getElementById('area-tbody').innerHTML = areas.length
+    ? areas.map(a=>`<tr>
+        <td><strong>${a.name}</strong></td>
+        <td>${TYPE_LABEL[a.type]||a.type}</td>
+        <td><span class="badge ${a.score==='high'?'badge-high':'badge-mid'}">${a.score==='high'?'추천':'검토'}</span></td>
+        <td>${a.rent||'-'}</td><td>${a.comp||'-'}</td>
+        <td><div class="td-actions">
+          <button class="btn btn-outline" onclick="editArea('${a.id}')">수정</button>
+          <button class="btn btn-red" onclick="deleteArea('${a.id}','${a.name}')">삭제</button>
+        </div></td></tr>`).join('')
+    : '<tr><td colspan="6" class="empty-state">등록된 상권이 없습니다.</td></tr>';
 }
 
-function resetAreas() {
-  if(!confirm('상권 목록을 기본값으로 복원할까요?')) return;
-  localStorage.removeItem('bonjuk_areas'); renderAreas();
-}
+window.openAreaModal = function(data) {
+  editAreaId = data?.id||null;
+  document.getElementById('area-modal-title').textContent = data?'상권 수정':'상권 추가';
+  ['name','type','score','pop','rent','comp','reason'].forEach(k => {
+    document.getElementById('f-'+k).value = data?.[k]||'';
+  });
+  if(!data) { document.getElementById('f-type').value='office'; document.getElementById('f-score').value='high'; }
+  document.getElementById('area-modal-bg').classList.add('open');
+};
+window.closeAreaModal = () => document.getElementById('area-modal-bg').classList.remove('open');
 
-let editId = null;
-function openModal(area) {
-  editId = area ? area.id : null;
-  document.getElementById('modal-title').textContent = area ? '상권 수정' : '상권 추가';
-  document.getElementById('f-name').value = area?.name||'';
-  document.getElementById('f-type').value = area?.type||'office';
-  document.getElementById('f-score').value = area?.score||'high';
-  document.getElementById('f-pop').value = area?.pop||'';
-  document.getElementById('f-rev').value = area?.rev||'';
-  document.getElementById('f-rent').value = area?.rent||'';
-  document.getElementById('f-comp').value = area?.comp||'';
-  document.getElementById('f-lat').value = area?.lat||'';
-  document.getElementById('f-lng').value = area?.lng||'';
-  document.getElementById('f-reason').value = area?.reason||'';
-  document.getElementById('modal-bg').classList.add('open');
-}
-function closeModal() { document.getElementById('modal-bg').classList.remove('open'); }
-function closeModalBg(e) { if(e.target===document.getElementById('modal-bg')) closeModal(); }
-
-function saveArea() {
+window.saveArea = async function() {
   const name = document.getElementById('f-name').value.trim();
-  if(!name){alert('상권명을 입력해주세요.');return;}
-  const areas = getAreas();
-  const obj = {
-    id: editId || Date.now(),
-    name, type:document.getElementById('f-type').value,
-    score:document.getElementById('f-score').value,
-    pop:document.getElementById('f-pop').value||'-',
-    rev:document.getElementById('f-rev').value||'-',
-    rent:document.getElementById('f-rent').value||'-',
-    comp:document.getElementById('f-comp').value||'-',
-    lat:parseFloat(document.getElementById('f-lat').value)||37.5665,
-    lng:parseFloat(document.getElementById('f-lng').value)||126.9780,
-    reason:document.getElementById('f-reason').value||''
-  };
-  if(editId) {
-    const idx = areas.findIndex(a=>a.id===editId);
-    if(idx>=0) areas[idx]=obj;
-  } else { areas.push(obj); }
-  saveAreas(areas); closeModal(); renderAreas();
-}
+  if(!name){ alert('상권명을 입력해주세요.'); return; }
+  const obj = { name, type:document.getElementById('f-type').value, score:document.getElementById('f-score').value, pop:document.getElementById('f-pop').value||'-', rent:document.getElementById('f-rent').value||'-', comp:document.getElementById('f-comp').value||'-', reason:document.getElementById('f-reason').value||'' };
+  if(editAreaId) await updateDoc(doc(db,'areas',editAreaId), obj);
+  else await addDoc(collection(db,'areas'), obj);
+  window.closeAreaModal(); loadAreas();
+};
 
-function editArea(id) {
-  const area = getAreas().find(a=>a.id===id);
-  if(area) openModal(area);
-}
-
-function deleteArea(id) {
-  const area = getAreas().find(a=>a.id===id);
-  if(!confirm(`"${area?.name}" 상권을 삭제할까요?`)) return;
-  saveAreas(getAreas().filter(a=>a.id!==id)); renderAreas();
-}
+window.editArea = async function(id) {
+  const snap = await getDoc(doc(db,'areas',id));
+  if(snap.exists()) window.openAreaModal({id,...snap.data()});
+};
+window.deleteArea = async function(id, name) {
+  if(!confirm(`"${name}" 상권을 삭제할까요?`)) return;
+  await deleteDoc(doc(db,'areas',id)); loadAreas();
+};
 
 // ── 양도양수 관리 ──
-const DEFAULT_TRANSFERS = [
-  { id:1, name:'본죽&비빔밥 마포공덕점', region:'서울', area:'16평', open:'2018년', rights:'6,000만원', rent:'160만원', status:'on',   desc:'오피스 밀집 상권으로 점심 고정 수요 안정적. 운영 7년차 단골 고객층 확보. 인테리어 상태 양호하며 주방 설비 교체 완료.' },
-  { id:2, name:'본죽&비빔밥 노원중계점', region:'서울', area:'13평', open:'2019년', rights:'4,500만원', rent:'130만원', status:'hot',  desc:'아파트 단지 내 배달 비중 60% 이상. 평일 안정적 매출 확보. 급매로 권리금 협의 가능.' },
-  { id:3, name:'본죽&비빔밥 수원영통점', region:'경기', area:'15평', open:'2020년', rights:'3,500만원', rent:'110만원', status:'on',   desc:'신도시 주거 상권. 30-40대 가족 수요 중심. 배달앱 평점 4.7 유지 중.' },
-  { id:4, name:'본죽&비빔밥 인천부평점', region:'인천', area:'14평', open:'2017년', rights:'5,000만원', rent:'120만원', status:'nego', desc:'부평역 인근 유동인구 풍부. 운영 8년차 매장으로 고정 고객 다수. 권리금 협의 중.' },
-  { id:5, name:'본죽&비빔밥 성남분당점', region:'경기', area:'18평', open:'2021년', rights:'5,500만원', rent:'190만원', status:'on',   desc:'분당 오피스·주거 복합 상권. 넓은 평수로 홀 매출 비중 높음. 시설 상태 최상급.' },
-  { id:6, name:'본죽&비빔밥 대구수성점', region:'지방', area:'12평', open:'2016년', rights:'2,500만원', rent:'80만원',  status:'hot',  desc:'수성구 주거 밀집 지역. 임대료 저렴해 수익률 우수. 소자본 창업에 최적.' },
-];
-const STATUS_LABEL = { on:'양도 가능', hot:'급매', nego:'협의 중' };
-const STATUS_BADGE  = { on:'badge-on',  hot:'badge-hot', nego:'badge-nego' };
-
-function getTransfers() {
-  try { const s=localStorage.getItem('bonjuk_transfers'); return s?JSON.parse(s):[...DEFAULT_TRANSFERS]; } catch(e){return[...DEFAULT_TRANSFERS];}
-}
-function saveTransfers(list) { localStorage.setItem('bonjuk_transfers', JSON.stringify(list)); }
-
-function renderTransfers() {
-  const list = getTransfers();
-  const tbody = document.getElementById('transfer-tbody');
-  const empty = document.getElementById('transfer-empty');
-  if (!list.length) { tbody.innerHTML=''; empty.style.display='block'; return; }
-  empty.style.display='none';
-  tbody.innerHTML = list.map(t=>`
-    <tr>
-      <td><strong>${t.name}</strong></td>
-      <td>${t.region}</td>
-      <td>${t.area}</td>
-      <td>${t.open}</td>
-      <td>${t.rights}</td>
-      <td>${t.rent}</td>
-      <td><span class="badge ${STATUS_BADGE[t.status]||'badge-on'}">${STATUS_LABEL[t.status]||t.status}</span></td>
-      <td><div class="td-actions">
-        <button class="btn btn-outline" onclick="editTransfer(${t.id})">수정</button>
-        <button class="btn btn-red" onclick="deleteTransfer(${t.id})">삭제</button>
-      </div></td>
-    </tr>`).join('');
+async function loadTransfers() {
+  const snap = await getDocs(collection(db,'transfers'));
+  const list = snap.docs.map(d=>({id:d.id,...d.data()}));
+  document.getElementById('transfer-tbody').innerHTML = list.length
+    ? list.map(t=>`<tr>
+        <td><strong>${t.name}</strong></td>
+        <td>${t.region||'-'}</td><td>${t.area||'-'}</td><td>${t.open||'-'}</td><td>${t.rights||'-'}</td><td>${t.rent||'-'}</td>
+        <td><span class="badge ${STATUS_BADGE[t.status]||'badge-on'}">${STATUS_LABEL[t.status]||t.status}</span></td>
+        <td><div class="td-actions">
+          <button class="btn btn-outline" onclick="editTransfer('${t.id}')">수정</button>
+          <button class="btn btn-red" onclick="deleteTransfer('${t.id}','${t.name}')">삭제</button>
+        </div></td></tr>`).join('')
+    : '';
+  document.getElementById('transfer-empty').style.display = list.length ? 'none' : 'block';
 }
 
-function resetTransfers() {
-  if(!confirm('매물 목록을 기본값으로 복원할까요?')) return;
-  localStorage.removeItem('bonjuk_transfers'); renderTransfers();
-}
-
-let editTransferId = null;
-function openTransferModal(t) {
-  editTransferId = t ? t.id : null;
-  document.getElementById('transfer-modal-title').textContent = t ? '매물 수정' : '매물 추가';
-  document.getElementById('tf-name').value   = t?.name||'';
-  document.getElementById('tf-region').value = t?.region||'서울';
-  document.getElementById('tf-status').value = t?.status||'on';
-  document.getElementById('tf-area').value   = t?.area||'';
-  document.getElementById('tf-open').value   = t?.open||'';
-  document.getElementById('tf-rights').value = t?.rights||'';
-  document.getElementById('tf-rent').value   = t?.rent||'';
-  document.getElementById('tf-desc').value   = t?.desc||'';
+window.openTransferModal = function(data) {
+  editTransferId = data?.id||null;
+  document.getElementById('transfer-modal-title').textContent = data?'매물 수정':'매물 추가';
+  document.getElementById('tf-name').value   = data?.name||'';
+  document.getElementById('tf-region').value = data?.region||'서울';
+  document.getElementById('tf-status').value = data?.status||'on';
+  document.getElementById('tf-area').value   = data?.area||'';
+  document.getElementById('tf-open').value   = data?.open||'';
+  document.getElementById('tf-rights').value = data?.rights||'';
+  document.getElementById('tf-rent').value   = data?.rent||'';
+  document.getElementById('tf-desc').value   = data?.desc||'';
   document.getElementById('transfer-modal-bg').classList.add('open');
-}
-function closeTransferModal() { document.getElementById('transfer-modal-bg').classList.remove('open'); }
-function closeTransferModalBg(e) { if(e.target===document.getElementById('transfer-modal-bg')) closeTransferModal(); }
+};
+window.closeTransferModal = () => document.getElementById('transfer-modal-bg').classList.remove('open');
 
-function saveTransfer() {
+window.saveTransfer = async function() {
   const name = document.getElementById('tf-name').value.trim();
-  if(!name){alert('매장명을 입력해주세요.');return;}
-  const list = getTransfers();
-  const obj = {
-    id:     editTransferId || Date.now(),
-    name,
-    region: document.getElementById('tf-region').value,
-    status: document.getElementById('tf-status').value,
-    area:   document.getElementById('tf-area').value||'-',
-    open:   document.getElementById('tf-open').value||'-',
-    rights: document.getElementById('tf-rights').value||'-',
-    rent:   document.getElementById('tf-rent').value||'-',
-    desc:   document.getElementById('tf-desc').value||'',
-  };
-  if(editTransferId) {
-    const idx = list.findIndex(t=>t.id===editTransferId);
-    if(idx>=0) list[idx]=obj;
-  } else { list.push(obj); }
-  saveTransfers(list); closeTransferModal(); renderTransfers();
-}
+  if(!name){ alert('매장명을 입력해주세요.'); return; }
+  const obj = { name, region:document.getElementById('tf-region').value, status:document.getElementById('tf-status').value, area:document.getElementById('tf-area').value||'-', open:document.getElementById('tf-open').value||'-', rights:document.getElementById('tf-rights').value||'-', rent:document.getElementById('tf-rent').value||'-', desc:document.getElementById('tf-desc').value||'' };
+  if(editTransferId) await updateDoc(doc(db,'transfers',editTransferId), obj);
+  else await addDoc(collection(db,'transfers'), obj);
+  window.closeTransferModal(); loadTransfers();
+};
 
-function editTransfer(id) {
-  const t = getTransfers().find(t=>t.id===id);
-  if(t) openTransferModal(t);
-}
-function deleteTransfer(id) {
-  const t = getTransfers().find(t=>t.id===id);
-  if(!confirm(`"${t?.name}" 매물을 삭제할까요?`)) return;
-  saveTransfers(getTransfers().filter(t=>t.id!==id)); renderTransfers();
-}
-
-// 초기 렌더
-renderVisitors();
+window.editTransfer = async function(id) {
+  const snap = await getDoc(doc(db,'transfers',id));
+  if(snap.exists()) window.openTransferModal({id,...snap.data()});
+};
+window.deleteTransfer = async function(id, name) {
+  if(!confirm(`"${name}" 매물을 삭제할까요?`)) return;
+  await deleteDoc(doc(db,'transfers',id)); loadTransfers();
+};
 </script>
 </body>
 </html>
