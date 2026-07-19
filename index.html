@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>본죽 창업 상권 탐색기</title>
-<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KAKAO_APP_KEY&libraries=services"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -15,25 +14,17 @@
     --text: #1a1a18; --text-sub: #5F5E5A;
   }
   body { font-family: -apple-system, 'Pretendard', 'Apple SD Gothic Neo', sans-serif; background: var(--gray-bg); color: var(--text); min-height: 100vh; }
-
-  /* ── 헤더 ── */
   .site-header { background: white; border-bottom: 0.5px solid var(--gray-border); padding: 14px 20px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
   .logo { width: 36px; height: 36px; background: var(--green); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
   .logo svg { width: 22px; height: 22px; fill: white; }
   .site-title { font-size: 15px; font-weight: 600; }
   .site-sub { font-size: 12px; color: var(--text-sub); }
   .header-cta { margin-left: auto; padding: 8px 16px; background: var(--green); color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; text-decoration: none; display: inline-block; }
-
-  /* ── 페이지 탭 ── */
   .page-tabs { display: flex; background: white; border-bottom: 0.5px solid var(--gray-border); padding: 0 20px; }
   .page-tab { padding: 12px 20px; font-size: 14px; color: var(--text-sub); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.12s; white-space: nowrap; }
   .page-tab.active { color: var(--green); border-bottom-color: var(--green); font-weight: 600; }
-
-  /* ── 섹션 공통 ── */
-  .page-section { display: none; width: 100%; height: calc(100vh - 113px); flex-direction: column; overflow: hidden; }
+  .page-section { display: none; width: 100%; flex-direction: column; }
   .page-section.active { display: flex; }
-
-  /* ── 상단 컨트롤 바 (공통) ── */
   .ctrl-bar { padding: 16px 24px 0; background: white; border-bottom: 0.5px solid var(--gray-border); flex-shrink: 0; }
   .ctrl-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
   .ctrl-title { font-size: 15px; font-weight: 600; }
@@ -49,23 +40,14 @@
   .filter-btn { padding: 5px 12px; font-size: 12px; border: 0.5px solid var(--gray-border); border-radius: 20px; background: white; color: var(--text-sub); cursor: pointer; transition: all 0.12s; }
   .filter-btn.active-green { background: var(--green); color: white; border-color: var(--green); }
   .filter-btn.active-blue  { background: var(--blue);  color: white; border-color: var(--blue); }
-
-  /* ── 스크롤 바디 ── */
-  .scroll-body { flex: 1; overflow-y: auto; padding: 20px 24px; }
-
-  /* ── 안내 박스 ── */
+  .scroll-body { flex: 1; overflow-y: auto; padding: 20px 24px; min-height: 60vh; }
   .notice-box { border-radius: 10px; padding: 14px 16px; margin-bottom: 18px; font-size: 13px; line-height: 1.6; }
   .notice-box-green { background: var(--green-light); border: 0.5px solid #A7F3D0; color: var(--green-text); }
   .notice-box-blue  { background: var(--blue-light);  border: 0.5px solid #BFDBFE; color: var(--blue-text); }
   .notice-box strong { font-weight: 700; }
-
-  /* ── 카드 그리드 ── */
   .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
-
-  /* 상권 카드 */
   .area-card { background: white; border: 0.5px solid var(--gray-border); border-radius: 12px; padding: 16px 18px; cursor: pointer; transition: border-color 0.12s, box-shadow 0.12s; }
   .area-card:hover { border-color: var(--green); box-shadow: 0 2px 12px rgba(29,158,117,0.08); }
-  .area-card.selected { border: 1.5px solid var(--green); }
   .ac-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
   .ac-name { font-size: 14px; font-weight: 700; }
   .badge { font-size: 11px; padding: 3px 9px; border-radius: 10px; display: inline-block; }
@@ -78,9 +60,6 @@
   .ac-meta-value { font-size: 13px; font-weight: 600; }
   .ac-reason { font-size: 12px; color: var(--text-sub); line-height: 1.6; margin-bottom: 12px; }
   .ac-btn { width: 100%; padding: 9px; background: var(--green); color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; }
-  .ac-btn:hover { background: var(--green-dark); }
-
-  /* 양도양수 카드 */
   .tc-card { background: white; border: 0.5px solid var(--gray-border); border-radius: 12px; padding: 16px 18px; cursor: pointer; transition: border-color 0.12s, box-shadow 0.12s; }
   .tc-card:hover { border-color: var(--blue); box-shadow: 0 2px 12px rgba(37,99,235,0.08); }
   .tc-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
@@ -95,11 +74,10 @@
   .tc-meta-value { font-size: 13px; font-weight: 600; }
   .tc-reason { font-size: 12px; color: var(--text-sub); line-height: 1.6; margin-bottom: 12px; }
   .tc-btn { width: 100%; padding: 9px; background: var(--blue); color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; }
-  .tc-btn:hover { background: #1D4ED8; }
-
   .no-result { padding: 60px 20px; text-align: center; color: var(--text-sub); font-size: 13px; }
-
-  /* ── 모달 ── */
+  .loading { padding: 60px 20px; text-align: center; color: var(--text-sub); font-size: 13px; }
+  .loading-spinner { width: 28px; height: 28px; border: 3px solid var(--green-light); border-top-color: var(--green); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 12px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
   .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.35); display: none; align-items: center; justify-content: center; z-index: 300; padding: 20px; }
   .modal-bg.open { display: flex; }
   .modal { background: white; border-radius: 14px; padding: 24px; width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto; }
@@ -115,7 +93,6 @@
   .modal-btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; color: white; }
   .modal-btn-green { background: var(--green); }
   .modal-btn-blue  { background: var(--blue); }
-
   ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: var(--gray-border); border-radius: 2px; }
 </style>
 </head>
@@ -132,14 +109,11 @@
   <div class="page-tab" onclick="switchPage('transfer', this)">양도양수 가능점</div>
 </div>
 
-<!-- ① 창업 추천 상권 -->
+<!-- 창업 추천 상권 -->
 <div class="page-section active" id="sec-area">
   <div class="ctrl-bar">
     <div class="ctrl-top">
-      <div>
-        <div class="ctrl-title">창업 추천 상권</div>
-        <div class="ctrl-sub">본죽&amp;비빔밥 창업에 적합한 상권을 확인하세요</div>
-      </div>
+      <div><div class="ctrl-title">창업 추천 상권</div><div class="ctrl-sub">본죽&amp;비빔밥 창업에 적합한 상권을 확인하세요</div></div>
       <span class="ctrl-count ctrl-count-green">총 <strong id="area-count">0</strong>개 상권</span>
     </div>
     <div class="search-row">
@@ -157,22 +131,19 @@
   </div>
   <div class="scroll-body">
     <div class="notice-box notice-box-green">
-      <strong>추천 상권이란?</strong> 본아이에프가 분석한 유동인구·상권 유형·경쟁도를 기반으로 본죽&amp;비빔밥 창업 적합도가 높은 지역입니다.
-      상권을 클릭하면 상세 분석을 확인하고 본사 창업 상담을 신청할 수 있습니다.
+      <strong>추천 상권이란?</strong> 본아이에프가 분석한 유동인구·상권 유형·경쟁도를 기반으로 본죽&amp;비빔밥 창업 적합도가 높은 지역입니다. 상권을 클릭하면 상세 분석을 확인하고 본사 창업 상담을 신청할 수 있습니다.
     </div>
-    <div class="card-grid" id="area-list"></div>
+    <div id="area-loading" class="loading"><div class="loading-spinner"></div>상권 정보를 불러오는 중...</div>
+    <div class="card-grid" id="area-list" style="display:none"></div>
     <div class="no-result" id="area-no-result" style="display:none">해당 조건의 상권이 없습니다</div>
   </div>
 </div>
 
-<!-- ② 양도양수 가능점 -->
+<!-- 양도양수 가능점 -->
 <div class="page-section" id="sec-transfer">
   <div class="ctrl-bar">
     <div class="ctrl-top">
-      <div>
-        <div class="ctrl-title">양도양수 가능점 안내</div>
-        <div class="ctrl-sub">운영 중인 본죽&amp;비빔밥 매장을 인수할 수 있습니다</div>
-      </div>
+      <div><div class="ctrl-title">양도양수 가능점 안내</div><div class="ctrl-sub">운영 중인 본죽&amp;비빔밥 매장을 인수할 수 있습니다</div></div>
       <span class="ctrl-count ctrl-count-blue">총 <strong id="transfer-count">0</strong>개 매물</span>
     </div>
     <div class="filter-row" id="transfer-filter-row">
@@ -185,11 +156,10 @@
   </div>
   <div class="scroll-body">
     <div class="notice-box notice-box-blue">
-      <strong>양도양수란?</strong> 기존 운영 중인 본죽&amp;비빔밥 가맹점을 인수하는 방식입니다.
-      신규 창업 대비 초기 리스크가 낮고 기존 단골 고객과 운영 노하우를 그대로 이어받을 수 있습니다.
-      단, 권리금 및 시설 상태를 반드시 직접 확인하시기 바랍니다.
+      <strong>양도양수란?</strong> 기존 운영 중인 본죽&amp;비빔밥 가맹점을 인수하는 방식입니다. 신규 창업 대비 초기 리스크가 낮고 기존 단골 고객과 운영 노하우를 그대로 이어받을 수 있습니다. 단, 권리금 및 시설 상태를 반드시 직접 확인하시기 바랍니다.
     </div>
-    <div class="card-grid" id="transfer-list"></div>
+    <div id="transfer-loading" class="loading"><div class="loading-spinner"></div>매물 정보를 불러오는 중...</div>
+    <div class="card-grid" id="transfer-list" style="display:none"></div>
     <div class="no-result" id="transfer-no-result" style="display:none">해당 조건의 매물이 없습니다</div>
   </div>
 </div>
@@ -197,10 +167,7 @@
 <!-- 상권 상세 모달 -->
 <div class="modal-bg" id="area-modal" onclick="closeModalBg('area-modal',event)">
   <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="am-name"></div>
-      <button class="modal-close" onclick="closeModal('area-modal')">✕</button>
-    </div>
+    <div class="modal-header"><div class="modal-title" id="am-name"></div><button class="modal-close" onclick="closeModal('area-modal')">✕</button></div>
     <div class="modal-stats" id="am-stats"></div>
     <div class="modal-desc" id="am-reason"></div>
     <button class="modal-btn modal-btn-green" onclick="window.open('https://www.bonif.co.kr/founding/info','_blank')">이 상권 창업 문의하기</button>
@@ -210,10 +177,7 @@
 <!-- 양도양수 상세 모달 -->
 <div class="modal-bg" id="transfer-modal" onclick="closeModalBg('transfer-modal',event)">
   <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="tm-name"></div>
-      <button class="modal-close" onclick="closeModal('transfer-modal')">✕</button>
-    </div>
+    <div class="modal-header"><div class="modal-title" id="tm-name"></div><button class="modal-close" onclick="closeModal('transfer-modal')">✕</button></div>
     <div class="modal-stats" id="tm-stats"></div>
     <div class="modal-desc" id="tm-desc"></div>
     <div class="modal-warn">⚠️ 실제 권리금·임대료·매출은 본사 상담 후 정확히 확인하세요. 이 정보는 참고용입니다.</div>
@@ -221,164 +185,183 @@
   </div>
 </div>
 
-<script>
-const TYPE_LABEL = { office:'오피스', residential:'주거단지', campus:'대학가', transit:'교통요지', hospital:'병원·실버' };
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, setDoc, increment, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDHv--cwvQSekKpHSVfbGDogu9Av8Pj0ZU",
+  authDomain: "bonjuk-franchise.firebaseapp.com",
+  projectId: "bonjuk-franchise",
+  storageBucket: "bonjuk-franchise.firebasestorage.app",
+  messagingSenderId: "223263554911",
+  appId: "1:223263554911:web:ca47100738eba4dbc68aea"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+const TYPE_LABEL   = { office:'오피스', residential:'주거단지', campus:'대학가', transit:'교통요지', hospital:'병원·실버' };
 const STATUS_LABEL = { on:'양도 가능', hot:'급매', nego:'협의 중' };
-const STATUS_CLASS  = { on:'tc-status-on', hot:'tc-status-hot', nego:'tc-status-nego' };
+const STATUS_CLASS = { on:'tc-status-on', hot:'tc-status-hot', nego:'tc-status-nego' };
 
-const DEFAULT_AREAS = [
-  { id:1, name:'강남 역삼', lat:37.5007, lng:127.0369, type:'office', score:'high', pop:'40만+', rent:'280만원~', comp:'낮음', reason:'대형 오피스 밀집 지역으로 평일 직장인 점심 수요가 안정적입니다. 테헤란로 인근 유동인구가 풍부하며 건강식 선호도가 높습니다.' },
-  { id:2, name:'여의도', lat:37.5219, lng:126.9245, type:'office', score:'high', pop:'30만+', rent:'250만원~', comp:'보통', reason:'금융사·방송사 직원 수요로 점심 피크 집중도가 높습니다. 웰빙·건강 트렌드가 강한 직종 구성으로 객단가 유리합니다.' },
-  { id:3, name:'종로 인사동', lat:37.5726, lng:126.9869, type:'transit', score:'high', pop:'25만+', rent:'200만원~', comp:'낮음', reason:'관광객과 직장인 복합 수요 지역입니다. 전통 이미지와 브랜드 결이 잘 맞고 외국인 방문객 증가로 성장세입니다.' },
-  { id:4, name:'신촌·홍대', lat:37.5563, lng:126.9378, type:'campus', score:'mid', pop:'35만+', rent:'230만원~', comp:'높음', reason:'대학생 수요가 풍부하지만 경쟁이 심합니다. 야간 수요 포함 운영 시 매출 추가 확보 가능하나 인건비 부담을 고려해야 합니다.' },
-  { id:5, name:'노원 중계동', lat:37.6541, lng:127.0563, type:'residential', score:'high', pop:'18만+', rent:'130만원~', comp:'낮음', reason:'대단지 아파트 밀집 지역으로 가족 배달 수요가 강세입니다. 임대료 대비 수익률이 우수하며 단골 확보에 유리합니다.' },
-  { id:6, name:'목동 신정동', lat:37.5298, lng:126.8739, type:'residential', score:'high', pop:'16만+', rent:'120만원~', comp:'낮음', reason:'중산층 주거 밀집 지역으로 건강식 선호 30-40대 주부층 수요가 안정적입니다.' },
-  { id:7, name:'건대 어린이대공원', lat:37.5407, lng:127.0693, type:'campus', score:'mid', pop:'22만+', rent:'180만원~', comp:'보통', reason:'대학가와 가족 나들이객 복합 상권입니다. 주말 수요가 크나 평일 편차가 있어 배달 비중을 높이는 전략이 필요합니다.' },
-  { id:8, name:'잠실 송파', lat:37.5134, lng:127.1010, type:'transit', score:'high', pop:'28만+', rent:'200만원~', comp:'보통', reason:'롯데월드·스포츠파크 인근으로 가족 단위·직장인 복합 수요입니다.' },
-  { id:9, name:'수유·방학', lat:37.6487, lng:127.0231, type:'hospital', score:'mid', pop:'14만+', rent:'100만원~', comp:'낮음', reason:'노인 인구 비율이 높아 건강식 수요가 유망합니다. 임대료가 낮아 소자본 창업에 적합합니다.' },
-  { id:10, name:'마포 공덕', lat:37.5431, lng:126.9538, type:'office', score:'high', pop:'20만+', rent:'160만원~', comp:'낮음', reason:'신흥 오피스 타운으로 임대료가 강남 대비 40% 저렴합니다. 직장인 점심 수요가 급증 중이며 성장 잠재력이 높습니다.' },
-];
+let ALL_AREAS = [], ALL_TRANSFERS = [], areaFilter = 'all';
 
-const DEFAULT_TRANSFERS = [
-  { id:1, name:'본죽&비빔밥 마포공덕점', region:'서울', area:'16평', open:'2018년', rights:'6,000만원', rent:'160만원', status:'on', desc:'오피스 밀집 상권으로 점심 고정 수요 안정적. 운영 7년차 단골 고객층 확보. 인테리어 상태 양호하며 주방 설비 교체 완료.' },
-  { id:2, name:'본죽&비빔밥 노원중계점', region:'서울', area:'13평', open:'2019년', rights:'4,500만원', rent:'130만원', status:'hot', desc:'아파트 단지 내 배달 비중 60% 이상. 평일 안정적 매출 확보. 급매로 권리금 협의 가능.' },
-  { id:3, name:'본죽&비빔밥 수원영통점', region:'경기', area:'15평', open:'2020년', rights:'3,500만원', rent:'110만원', status:'on', desc:'신도시 주거 상권. 30-40대 가족 수요 중심. 배달앱 평점 4.7 유지 중.' },
-  { id:4, name:'본죽&비빔밥 인천부평점', region:'인천', area:'14평', open:'2017년', rights:'5,000만원', rent:'120만원', status:'nego', desc:'부평역 인근 유동인구 풍부. 운영 8년차 매장으로 고정 고객 다수. 권리금 협의 중.' },
-  { id:5, name:'본죽&비빔밥 성남분당점', region:'경기', area:'18평', open:'2021년', rights:'5,500만원', rent:'190만원', status:'on', desc:'분당 오피스·주거 복합 상권. 넓은 평수로 홀 매출 비중 높음. 시설 상태 최상급.' },
-  { id:6, name:'본죽&비빔밥 대구수성점', region:'지방', area:'12평', open:'2016년', rights:'2,500만원', rent:'80만원', status:'hot', desc:'수성구 주거 밀집 지역. 임대료 저렴해 수익률 우수. 소자본 창업에 최적.' },
-];
-
-function getAreas()     { try { const s=localStorage.getItem('bonjuk_areas');     return s?JSON.parse(s):DEFAULT_AREAS;     } catch(e){return DEFAULT_AREAS;} }
-function getTransfers() { try { const s=localStorage.getItem('bonjuk_transfers'); return s?JSON.parse(s):DEFAULT_TRANSFERS; } catch(e){return DEFAULT_TRANSFERS;} }
-
-// 방문자 카운트
-(function(){
-  const today = new Date().toISOString().slice(0,10);
-  try { const v=JSON.parse(localStorage.getItem('bonjuk_visits')||'{}'); v[today]=(v[today]||0)+1; localStorage.setItem('bonjuk_visits',JSON.stringify(v)); } catch(e){}
-})();
-
-// ── 페이지 탭 ──
-function switchPage(name, el) {
-  document.querySelectorAll('.page-tab').forEach(t=>t.classList.remove('active')); el.classList.add('active');
-  document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));
-  document.getElementById('sec-'+name).classList.add('active');
-  if (name==='transfer') renderTransfers(getTransfers());
+// ── 방문자 카운트 ──
+async function trackVisit() {
+  const today = new Date().toISOString().slice(0, 10);
+  const ref = doc(db, 'stats', 'visits');
+  try {
+    await setDoc(ref, { [today]: increment(1), lastVisit: serverTimestamp() }, { merge: true });
+  } catch(e) { console.warn('visit track failed', e); }
 }
 
-// ── 상권 탭 ──
-let areaFilter = 'all';
-const AREAS = getAreas();
+// ── 상권 데이터 로드 ──
+async function loadAreas() {
+  try {
+    const snap = await getDocs(collection(db, 'areas'));
+    ALL_AREAS = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch(e) {
+    console.warn('areas load failed', e);
+    ALL_AREAS = [];
+  }
+  document.getElementById('area-loading').style.display = 'none';
+  document.getElementById('area-list').style.display = '';
+  renderAreas(ALL_AREAS);
+}
 
+// ── 양도양수 데이터 로드 ──
+async function loadTransfers() {
+  try {
+    const snap = await getDocs(collection(db, 'transfers'));
+    ALL_TRANSFERS = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch(e) {
+    console.warn('transfers load failed', e);
+    ALL_TRANSFERS = [];
+  }
+  document.getElementById('transfer-loading').style.display = 'none';
+  document.getElementById('transfer-list').style.display = '';
+  renderTransfers(ALL_TRANSFERS);
+}
+
+// ── 상권 클릭 카운트 ──
+async function trackAreaClick(areaId, areaName) {
+  try {
+    const ref = doc(db, 'stats', 'area_clicks');
+    await setDoc(ref, {
+      [areaId]: { name: areaName, count: increment(1) }
+    }, { merge: true });
+  } catch(e) { console.warn('click track failed', e); }
+}
+
+// ── 탭 전환 ──
+window.switchPage = function(name, el) {
+  document.querySelectorAll('.page-tab').forEach(t => t.classList.remove('active')); el.classList.add('active');
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  if (name === 'transfer' && ALL_TRANSFERS.length === 0) loadTransfers();
+};
+
+// ── 상권 렌더 ──
 function renderAreas(list) {
   document.getElementById('area-count').textContent = list.length;
   const noResult = document.getElementById('area-no-result');
-  if (!list.length) { document.getElementById('area-list').innerHTML=''; noResult.style.display='block'; return; }
-  noResult.style.display='none';
-  document.getElementById('area-list').innerHTML = list.map(a=>`
-    <div class="area-card" onclick="openAreaModal(${a.id})">
-      <div class="ac-top">
-        <div class="ac-name">${a.name}</div>
+  if (!list.length) { document.getElementById('area-list').innerHTML = ''; noResult.style.display = 'block'; return; }
+  noResult.style.display = 'none';
+  document.getElementById('area-list').innerHTML = list.map(a => `
+    <div class="area-card" onclick="openAreaModal('${a.id}')">
+      <div class="ac-top"><div class="ac-name">${a.name}</div>
         <span class="badge ${a.score==='high'?'badge-high':'badge-mid'}">${a.score==='high'?'추천':'검토'}</span>
       </div>
       <div style="margin-bottom:10px"><span class="badge badge-type">${TYPE_LABEL[a.type]||a.type}</span></div>
       <div class="ac-meta">
-        <div class="ac-meta-item"><div class="ac-meta-label">유동인구</div><div class="ac-meta-value">${a.pop}</div></div>
-        <div class="ac-meta-item"><div class="ac-meta-label">월 임대료</div><div class="ac-meta-value">${a.rent}</div></div>
-        <div class="ac-meta-item"><div class="ac-meta-label">경쟁도</div><div class="ac-meta-value">${a.comp}</div></div>
+        <div class="ac-meta-item"><div class="ac-meta-label">유동인구</div><div class="ac-meta-value">${a.pop||'-'}</div></div>
+        <div class="ac-meta-item"><div class="ac-meta-label">월 임대료</div><div class="ac-meta-value">${a.rent||'-'}</div></div>
+        <div class="ac-meta-item"><div class="ac-meta-label">경쟁도</div><div class="ac-meta-value">${a.comp||'-'}</div></div>
       </div>
-      <div class="ac-reason">${a.reason}</div>
+      <div class="ac-reason">${a.reason||''}</div>
       <button class="ac-btn">창업 상담 신청 →</button>
     </div>`).join('');
 }
 
-function setAreaFilter(f, btn) {
+window.setAreaFilter = function(f, btn) {
   areaFilter = f;
-  document.querySelectorAll('#area-filter-row .filter-btn').forEach(b=>b.classList.remove('active-green')); btn.classList.add('active-green');
-  const filtered = f==='all' ? AREAS : AREAS.filter(a=>a.type===f);
-  renderAreas(filtered);
-}
+  document.querySelectorAll('#area-filter-row .filter-btn').forEach(b => b.classList.remove('active-green')); btn.classList.add('active-green');
+  renderAreas(f === 'all' ? ALL_AREAS : ALL_AREAS.filter(a => a.type === f));
+};
 
-function doSearch() {
+window.doSearch = function() {
   const q = document.getElementById('search-input').value.trim();
-  if (!q) { renderAreas(AREAS); return; }
-  renderAreas(AREAS.filter(a=>a.name.includes(q)||(TYPE_LABEL[a.type]||'').includes(q)));
-}
-document.getElementById('search-input').addEventListener('keydown', e=>{ if(e.key==='Enter') doSearch(); });
+  if (!q) { renderAreas(ALL_AREAS); return; }
+  renderAreas(ALL_AREAS.filter(a => a.name.includes(q) || (TYPE_LABEL[a.type]||'').includes(q)));
+};
+document.getElementById('search-input').addEventListener('keydown', e => { if(e.key==='Enter') window.doSearch(); });
 
-function trackAreaClick(id, name) {
-  try {
-    const clicks = JSON.parse(localStorage.getItem('bonjuk_area_clicks') || '{}');
-    if (!clicks[id]) clicks[id] = { name, count: 0 };
-    clicks[id].name = name;
-    clicks[id].count += 1;
-    localStorage.setItem('bonjuk_area_clicks', JSON.stringify(clicks));
-  } catch(e) {}
-}
-
-function openAreaModal(id) {
-  const a = AREAS.find(x=>x.id===id); if(!a) return;
+window.openAreaModal = function(id) {
+  const a = ALL_AREAS.find(x => x.id === id); if (!a) return;
   trackAreaClick(a.id, a.name);
   document.getElementById('am-name').textContent = a.name + ' 상권';
   document.getElementById('am-stats').innerHTML = [
-    {label:'상권 유형', value:TYPE_LABEL[a.type]||a.type},
-    {label:'추천도',    value:a.score==='high'?'추천':'검토'},
-    {label:'하루 유동인구', value:a.pop},
-    {label:'월 임대료(33㎡)', value:a.rent},
-    {label:'주변 경쟁도', value:a.comp},
-  ].map(s=>`<div class="modal-stat"><div class="modal-stat-label">${s.label}</div><div class="modal-stat-value">${s.value}</div></div>`).join('');
-  document.getElementById('am-reason').textContent = a.reason;
+    { label:'상권 유형', value: TYPE_LABEL[a.type]||a.type },
+    { label:'추천도',    value: a.score==='high'?'추천':'검토' },
+    { label:'하루 유동인구', value: a.pop||'-' },
+    { label:'월 임대료(33㎡)', value: a.rent||'-' },
+    { label:'주변 경쟁도', value: a.comp||'-' },
+  ].map(s => `<div class="modal-stat"><div class="modal-stat-label">${s.label}</div><div class="modal-stat-value">${s.value}</div></div>`).join('');
+  document.getElementById('am-reason').textContent = a.reason||'';
   document.getElementById('area-modal').classList.add('open');
-}
+};
 
-// ── 양도양수 탭 ──
+// ── 양도양수 렌더 ──
 function renderTransfers(list) {
   document.getElementById('transfer-count').textContent = list.length;
   const noResult = document.getElementById('transfer-no-result');
-  if (!list.length) { document.getElementById('transfer-list').innerHTML=''; noResult.style.display='block'; return; }
-  noResult.style.display='none';
-  document.getElementById('transfer-list').innerHTML = list.map(t=>`
-    <div class="tc-card" onclick="openTransferModal(${t.id})">
-      <div class="tc-top">
-        <div class="tc-name">${t.name}</div>
+  if (!list.length) { document.getElementById('transfer-list').innerHTML = ''; noResult.style.display = 'block'; return; }
+  noResult.style.display = 'none';
+  document.getElementById('transfer-list').innerHTML = list.map(t => `
+    <div class="tc-card" onclick="openTransferModal('${t.id}')">
+      <div class="tc-top"><div class="tc-name">${t.name}</div>
         <span class="tc-status ${STATUS_CLASS[t.status]||'tc-status-on'}">${STATUS_LABEL[t.status]||t.status}</span>
       </div>
       <div class="tc-meta">
-        <div class="tc-meta-item"><div class="tc-meta-label">지역</div><div class="tc-meta-value">${t.region}</div></div>
-        <div class="tc-meta-item"><div class="tc-meta-label">매장 규모</div><div class="tc-meta-value">${t.area}</div></div>
-        <div class="tc-meta-item"><div class="tc-meta-label">오픈연도</div><div class="tc-meta-value">${t.open}</div></div>
-        <div class="tc-meta-item"><div class="tc-meta-label">권리금</div><div class="tc-meta-value">${t.rights}</div></div>
+        <div class="tc-meta-item"><div class="tc-meta-label">지역</div><div class="tc-meta-value">${t.region||'-'}</div></div>
+        <div class="tc-meta-item"><div class="tc-meta-label">매장 규모</div><div class="tc-meta-value">${t.area||'-'}</div></div>
+        <div class="tc-meta-item"><div class="tc-meta-label">오픈연도</div><div class="tc-meta-value">${t.open||'-'}</div></div>
+        <div class="tc-meta-item"><div class="tc-meta-label">권리금</div><div class="tc-meta-value">${t.rights||'-'}</div></div>
       </div>
-      <div class="tc-reason">${t.desc}</div>
+      <div class="tc-reason">${t.desc||''}</div>
       <button class="tc-btn">인수 상담 신청 →</button>
     </div>`).join('');
 }
 
-function setTransferFilter(f, btn) {
-  document.querySelectorAll('#transfer-filter-row .filter-btn').forEach(b=>b.classList.remove('active-blue')); btn.classList.add('active-blue');
-  const all = getTransfers();
-  const filtered = f==='all' ? all : all.filter(t=> f==='지방' ? !['서울','경기','인천'].includes(t.region) : t.region===f);
+window.setTransferFilter = function(f, btn) {
+  document.querySelectorAll('#transfer-filter-row .filter-btn').forEach(b => b.classList.remove('active-blue')); btn.classList.add('active-blue');
+  const filtered = f === 'all' ? ALL_TRANSFERS : ALL_TRANSFERS.filter(t => f === '지방' ? !['서울','경기','인천'].includes(t.region) : t.region === f);
   renderTransfers(filtered);
-}
+};
 
-function openTransferModal(id) {
-  const t = getTransfers().find(x=>x.id===id); if(!t) return;
+window.openTransferModal = function(id) {
+  const t = ALL_TRANSFERS.find(x => x.id === id); if (!t) return;
   document.getElementById('tm-name').textContent = t.name;
   document.getElementById('tm-stats').innerHTML = [
-    {label:'지역',     value:t.region},
-    {label:'매장 규모', value:t.area},
-    {label:'오픈연도',  value:t.open},
-    {label:'권리금',   value:t.rights},
-    {label:'월 임대료', value:t.rent},
-    {label:'매물 상태', value:STATUS_LABEL[t.status]||t.status},
-  ].map(s=>`<div class="modal-stat"><div class="modal-stat-label">${s.label}</div><div class="modal-stat-value">${s.value}</div></div>`).join('');
-  document.getElementById('tm-desc').textContent = t.desc;
+    { label:'지역',      value: t.region||'-' },
+    { label:'매장 규모', value: t.area||'-' },
+    { label:'오픈연도',  value: t.open||'-' },
+    { label:'권리금',    value: t.rights||'-' },
+    { label:'월 임대료', value: t.rent||'-' },
+    { label:'매물 상태', value: STATUS_LABEL[t.status]||t.status },
+  ].map(s => `<div class="modal-stat"><div class="modal-stat-label">${s.label}</div><div class="modal-stat-value">${s.value}</div></div>`).join('');
+  document.getElementById('tm-desc').textContent = t.desc||'';
   document.getElementById('transfer-modal').classList.add('open');
-}
+};
 
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-function closeModalBg(id, e) { if(e.target===document.getElementById(id)) closeModal(id); }
+window.closeModal    = id => document.getElementById(id).classList.remove('open');
+window.closeModalBg  = (id, e) => { if(e.target === document.getElementById(id)) window.closeModal(id); };
 
-renderAreas(AREAS);
+// ── 초기 실행 ──
+trackVisit();
+loadAreas();
 </script>
 </body>
 </html>
