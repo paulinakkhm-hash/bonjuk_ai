@@ -74,6 +74,9 @@
   .tc-meta-value { font-size: 13px; font-weight: 600; }
   .tc-reason { font-size: 12px; color: var(--text-sub); line-height: 1.6; margin-bottom: 12px; }
   .tc-btn { width: 100%; padding: 9px; background: var(--blue); color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; }
+  .tc-meta-revenue { grid-column: 1 / -1; background: var(--green-light) !important; display: flex; align-items: center; justify-content: space-between; }
+  .tc-meta-revenue .tc-meta-label { color: var(--green-text); }
+  .tc-meta-revenue .tc-meta-value { color: var(--green-text); font-size: 14px; }
   .no-result { padding: 60px 20px; text-align: center; color: var(--text-sub); font-size: 13px; }
   .loading { padding: 60px 20px; text-align: center; color: var(--text-sub); font-size: 13px; }
   .loading-spinner { width: 28px; height: 28px; border: 3px solid var(--green-light); border-top-color: var(--green); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 12px; }
@@ -94,6 +97,21 @@
   .modal-btn-green { background: var(--green); }
   .modal-btn-blue  { background: var(--blue); }
   ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: var(--gray-border); border-radius: 2px; }
+
+  /* ── 상담 신청 폼 배너 ── */
+  .lead-banner { background: linear-gradient(135deg, #0F6E56 0%, #1D9E75 100%); padding: 20px 24px; }
+  .lead-banner-title { font-size: 15px; font-weight: 700; color: white; margin-bottom: 4px; }
+  .lead-banner-sub { font-size: 12px; color: rgba(255,255,255,0.75); margin-bottom: 16px; }
+  .lead-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+  .lead-form input, .lead-form select, .lead-form textarea { padding: 9px 12px; border: none; border-radius: 8px; font-size: 13px; color: var(--text); background: rgba(255,255,255,0.95); outline: none; width: 100%; }
+  .lead-form input::placeholder, .lead-form textarea::placeholder { color: #9CA3AF; }
+  .lead-form textarea { resize: none; height: 38px; grid-column: 1 / -1; }
+  .lead-form-row { display: contents; }
+  .lead-submit { grid-column: 1 / -1; padding: 11px; background: white; color: var(--green-dark); border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.12s; }
+  .lead-submit:hover { background: var(--green-light); }
+  .lead-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+  .lead-success { display: none; text-align: center; padding: 14px; background: rgba(255,255,255,0.15); border-radius: 10px; color: white; font-size: 14px; font-weight: 600; }
+  .lead-success span { font-size: 22px; display: block; margin-bottom: 6px; }
 </style>
 </head>
 <body>
@@ -101,7 +119,6 @@
 <header class="site-header">
   <div class="logo"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>
   <div><div class="site-title">본죽 창업 상권 탐색기</div><div class="site-sub">창업 적합 상권을 바로 확인하세요</div></div>
-  <a class="header-cta" href="https://www.bonif.co.kr/founding/info" target="_blank">본사 창업 문의</a>
 </header>
 
 <div class="page-tabs">
@@ -111,6 +128,23 @@
 
 <!-- 창업 추천 상권 -->
 <div class="page-section active" id="sec-area">
+  <!-- 상담 신청 폼 배너 -->
+  <div class="lead-banner" id="lead-banner-area">
+    <div class="lead-banner-title">🟢 무료 창업 상담 신청</div>
+    <div class="lead-banner-sub">담당자가 직접 연락드려 맞춤 상권을 안내해드립니다</div>
+    <div class="lead-form" id="lead-form-area">
+      <input id="la-name"   type="text"  placeholder="이름 *" />
+      <input id="la-phone"  type="tel"   placeholder="연락처 * (예: 010-1234-5678)" />
+      <input id="la-email"  type="email" placeholder="이메일" />
+      <input id="la-area"   type="text"  placeholder="관심 상권 (예: 강남, 홍대)" />
+      <textarea id="la-msg" placeholder="문의 내용"></textarea>
+      <button class="lead-submit" onclick="submitLead('area')">상담 신청하기 →</button>
+    </div>
+    <div class="lead-success" id="lead-success-area">
+      <span>✅</span>상담 신청이 완료되었습니다!<br><small style="font-weight:400;opacity:0.85">담당자가 영업일 기준 1일 내 연락드립니다</small>
+    </div>
+    <div style="margin-top:12px;font-size:7pt;color:rgba(255,255,255,0.65);line-height:1.8">"본아이에프㈜"는 본죽&amp;비빔밥 창업 상담 진행을 위해 아래와 같이 개인정보를 수집·이용합니다.<br>수집목적 : 본죽&amp;비빔밥 가맹점 창업 관련 SMS, LMS, MMS 전송 및 전화 상담<br>수집항목 : 이름, 연락처, 창업희망지역<br>보유기간 : 동의한 날로부터 3년 간<br>*수집 동의 후, 개인정보 파기 요청 시 즉시 복구불가하도록 파기<br>창업 상담 서비스 이용에 필요한 최소한의 개인정보 수집·이용에 동의하지 않을 수 있으나, 동의를 거부 할 경우 상담이 불가 합니다.</div>
+  </div>
   <div class="ctrl-bar">
     <div class="ctrl-top">
       <div><div class="ctrl-title">창업 추천 상권</div><div class="ctrl-sub">본죽&amp;비빔밥 창업에 적합한 상권을 확인하세요</div></div>
@@ -141,6 +175,23 @@
 
 <!-- 양도양수 가능점 -->
 <div class="page-section" id="sec-transfer">
+  <!-- 상담 신청 폼 배너 -->
+  <div class="lead-banner" id="lead-banner-transfer">
+    <div class="lead-banner-title">🔵 무료 양도양수 상담 신청</div>
+    <div class="lead-banner-sub">관심 매물 인수 절차와 비용을 담당자가 직접 안내해드립니다</div>
+    <div class="lead-form" id="lead-form-transfer">
+      <input id="lt-name"   type="text"  placeholder="이름 *" />
+      <input id="lt-phone"  type="tel"   placeholder="연락처 * (예: 010-1234-5678)" />
+      <input id="lt-email"  type="email" placeholder="이메일" />
+      <input id="lt-area"   type="text"  placeholder="관심 매물 또는 지역" />
+      <textarea id="lt-msg" placeholder="문의 내용"></textarea>
+      <button class="lead-submit" onclick="submitLead('transfer')">상담 신청하기 →</button>
+    </div>
+    <div class="lead-success" id="lead-success-transfer">
+      <span>✅</span>상담 신청이 완료되었습니다!<br><small style="font-weight:400;opacity:0.85">담당자가 영업일 기준 1일 내 연락드립니다</small>
+    </div>
+    <div style="margin-top:12px;font-size:7pt;color:rgba(255,255,255,0.65);line-height:1.8">"본아이에프㈜"는 본죽&amp;비빔밥 창업 상담 진행을 위해 아래와 같이 개인정보를 수집·이용합니다.<br>수집목적 : 본죽&amp;비빔밥 가맹점 창업 관련 SMS, LMS, MMS 전송 및 전화 상담<br>수집항목 : 이름, 연락처, 창업희망지역<br>보유기간 : 동의한 날로부터 3년 간<br>*수집 동의 후, 개인정보 파기 요청 시 즉시 복구불가하도록 파기<br>창업 상담 서비스 이용에 필요한 최소한의 개인정보 수집·이용에 동의하지 않을 수 있으나, 동의를 거부 할 경우 상담이 불가 합니다.</div>
+  </div>
   <div class="ctrl-bar">
     <div class="ctrl-top">
       <div><div class="ctrl-title">양도양수 가능점 안내</div><div class="ctrl-sub">운영 중인 본죽&amp;비빔밥 매장을 인수할 수 있습니다</div></div>
@@ -188,7 +239,7 @@
 <!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, setDoc, increment, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, setDoc, increment, serverTimestamp, getDoc, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDHv--cwvQSekKpHSVfbGDogu9Av8Pj0ZU",
@@ -276,7 +327,7 @@ function renderAreas(list) {
       </div>
       <div style="margin-bottom:10px"><span class="badge badge-type">${TYPE_LABEL[a.type]||a.type}</span></div>
       <div class="ac-meta">
-        <div class="ac-meta-item"><div class="ac-meta-label">유동인구</div><div class="ac-meta-value">${a.pop||'-'}</div></div>
+        <div class="ac-meta-item"><div class="ac-meta-label">${a.type==='residential'?'세대수':'유동인구'}</div><div class="ac-meta-value">${a.pop||'-'}</div></div>
         <div class="ac-meta-item"><div class="ac-meta-label">월 임대료</div><div class="ac-meta-value">${a.rent||'-'}</div></div>
         <div class="ac-meta-item"><div class="ac-meta-label">경쟁도</div><div class="ac-meta-value">${a.comp||'-'}</div></div>
       </div>
@@ -305,7 +356,7 @@ window.openAreaModal = function(id) {
   document.getElementById('am-stats').innerHTML = [
     { label:'상권 유형', value: TYPE_LABEL[a.type]||a.type },
     { label:'추천도',    value: a.score==='high'?'추천':'검토' },
-    { label:'하루 유동인구', value: a.pop||'-' },
+    { label: a.type==='residential'?'세대수':'하루 유동인구', value: a.pop||'-' },
     { label:'월 임대료(33㎡)', value: a.rent||'-' },
     { label:'주변 경쟁도', value: a.comp||'-' },
   ].map(s => `<div class="modal-stat"><div class="modal-stat-label">${s.label}</div><div class="modal-stat-value">${s.value}</div></div>`).join('');
@@ -329,6 +380,7 @@ function renderTransfers(list) {
         <div class="tc-meta-item"><div class="tc-meta-label">매장 규모</div><div class="tc-meta-value">${t.area||'-'}</div></div>
         <div class="tc-meta-item"><div class="tc-meta-label">오픈연도</div><div class="tc-meta-value">${t.open||'-'}</div></div>
         <div class="tc-meta-item"><div class="tc-meta-label">권리금</div><div class="tc-meta-value">${t.rights||'-'}</div></div>
+        ${t.revenue ? `<div class="tc-meta-item tc-meta-revenue"><div class="tc-meta-label">월 평균매출</div><div class="tc-meta-value">${t.revenue}</div></div>` : ''}
       </div>
       <div class="tc-reason">${t.desc||''}</div>
       <button class="tc-btn">인수 상담 신청 →</button>
@@ -351,13 +403,44 @@ window.openTransferModal = function(id) {
     { label:'권리금',    value: t.rights||'-' },
     { label:'월 임대료', value: t.rent||'-' },
     { label:'매물 상태', value: STATUS_LABEL[t.status]||t.status },
-  ].map(s => `<div class="modal-stat"><div class="modal-stat-label">${s.label}</div><div class="modal-stat-value">${s.value}</div></div>`).join('');
+  ].map(s => `<div class="modal-stat"><div class="modal-stat-label">${s.label}</div><div class="modal-stat-value">${s.value}</div></div>`).join('')
+  + (t.revenue ? `<div class="modal-stat modal-stat-revenue" style="grid-column:1/-1;background:var(--green-light);border:0.5px solid #A7F3D0"><div class="modal-stat-label" style="color:var(--green-text)">월 평균매출</div><div class="modal-stat-value" style="color:var(--green-text)">${t.revenue}</div></div>` : '');
   document.getElementById('tm-desc').textContent = t.desc||'';
   document.getElementById('transfer-modal').classList.add('open');
 };
 
 window.closeModal    = id => document.getElementById(id).classList.remove('open');
 window.closeModalBg  = (id, e) => { if(e.target === document.getElementById(id)) window.closeModal(id); };
+
+// ── 상담 신청 폼 제출 ──
+window.submitLead = async function(type) {
+  const prefix = type === 'area' ? 'la' : 'lt';
+  const name  = document.getElementById(`${prefix}-name`).value.trim();
+  const phone = document.getElementById(`${prefix}-phone`).value.trim();
+  if (!name)  { alert('이름을 입력해주세요.'); return; }
+  if (!phone) { alert('연락처를 입력해주세요.'); return; }
+
+  const btn = document.querySelector(`#lead-form-${type} .lead-submit`);
+  btn.disabled = true; btn.textContent = '제출 중...';
+
+  try {
+    await addDoc(collection(db, 'leads'), {
+      type:      type === 'area' ? '창업추천상권' : '양도양수',
+      name,
+      phone,
+      email:     document.getElementById(`${prefix}-email`).value.trim(),
+      interest:  document.getElementById(`${prefix}-area`).value.trim(),
+      message:   document.getElementById(`${prefix}-msg`).value.trim(),
+      createdAt: serverTimestamp(),
+      status:    '신규',
+    });
+    document.getElementById(`lead-form-${type}`).style.display  = 'none';
+    document.getElementById(`lead-success-${type}`).style.display = 'block';
+  } catch(e) {
+    alert('제출 중 오류가 발생했습니다. 다시 시도해주세요.');
+    btn.disabled = false; btn.textContent = '상담 신청하기 →';
+  }
+};
 
 // ── 초기 실행 ──
 trackVisit();

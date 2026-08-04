@@ -86,6 +86,9 @@
   .badge-on   { background: var(--blue-light); color: var(--blue-text); }
   .badge-hot  { background: #FEF2F2; color: #991B1B; }
   .badge-nego { background: #F5F3FF; color: #5B21B6; }
+  .badge-new    { background: #FEF9C3; color: #854D0E; }
+  .badge-contact { background: var(--green-light); color: var(--green-text); }
+  .badge-done   { background: var(--gray-bg); color: var(--text-sub); }
   .td-actions { display: flex; gap: 6px; }
 
   /* 방문자 */
@@ -129,6 +132,20 @@
 
   .empty-state { padding: 40px; text-align: center; color: var(--text-sub); font-size: 13px; line-height: 1.6; }
   .loading-inline { padding: 30px; text-align: center; color: var(--text-sub); font-size: 13px; }
+
+  /* ── CSV 업로드 ── */
+  .upload-box { background: white; border: 0.5px solid var(--gray-border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+  .upload-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .upload-desc { font-size: 13px; color: var(--text-sub); margin-bottom: 14px; line-height: 1.5; }
+  .upload-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn-upload { background: var(--blue-light); color: var(--blue-text); border: 0.5px solid #BFDBFE; padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .btn-upload:hover { background: #DBEAFE; }
+  .upload-preview { margin-top: 16px; border: 0.5px solid var(--green); border-radius: 10px; overflow: hidden; }
+  .preview-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--green-light); border-bottom: 0.5px solid #A7F3D0; font-size: 13px; font-weight: 600; color: var(--green-text); flex-wrap: wrap; gap: 8px; }
+  .preview-table-wrap { overflow-x: auto; max-height: 240px; overflow-y: auto; }
+  .upload-result { margin-top: 10px; font-size: 13px; min-height: 20px; }
+  .upload-result.success { color: var(--green-text); }
+  .upload-result.error   { color: var(--red); }
   ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: var(--gray-border); border-radius: 2px; }
 </style>
 </head>
@@ -162,6 +179,7 @@
   <div class="tabs">
     <div class="tab active" onclick="switchTab('visitors',this)">방문자 통계</div>
     <div class="tab" onclick="switchTab('clicks',this)">상권별 클릭 집계</div>
+    <div class="tab" onclick="switchTab('leads',this)">상담 신청 관리</div>
     <div class="tab" onclick="switchTab('areas',this)">상권 관리</div>
     <div class="tab" onclick="switchTab('transfers',this)">양도양수 관리</div>
   </div>
@@ -203,8 +221,57 @@
       </div>
     </div>
 
+    <!-- 상담 신청 관리 -->
+    <div class="section" id="sec-leads">
+      <div class="stat-row" id="lead-summary-cards"><div class="loading-inline">불러오는 중...</div></div>
+      <div class="table-wrap">
+        <div class="table-header">
+          <span class="table-title">상담 신청 목록</span>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-outline" onclick="exportLeads()">CSV 내보내기</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr>
+              <th>신청일시</th><th>유형</th><th>이름</th><th>연락처</th><th>이메일</th>
+              <th>관심 상권</th><th>문의 내용</th><th>상태</th><th></th>
+            </tr></thead>
+            <tbody id="lead-tbody"><tr><td colspan="10" class="loading-inline">불러오는 중...</td></tr></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="lead-empty" style="display:none">아직 상담 신청이 없습니다.</div>
+      </div>
+    </div>
+
     <!-- 상권 관리 -->
     <div class="section" id="sec-areas">
+      <div class="upload-box">
+        <div class="upload-title">📂 CSV 일괄 등록</div>
+        <div class="upload-desc">엑셀에서 작성 후 CSV로 저장하여 업로드하세요. 기존 데이터에 추가됩니다.</div>
+        <div class="upload-row">
+          <button class="btn btn-outline" onclick="downloadAreaSample()">샘플 CSV 받기</button>
+          <label class="btn btn-upload">
+            CSV 업로드
+            <input type="file" accept=".csv" id="area-csv-input" style="display:none" onchange="uploadAreaCSV(event)" />
+          </label>
+        </div>
+        <div class="upload-preview" id="area-preview" style="display:none">
+          <div class="preview-header">
+            <span id="area-preview-count"></span>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-outline" onclick="cancelAreaUpload()">취소</button>
+              <button class="btn btn-green" onclick="confirmAreaUpload()">Firestore에 저장</button>
+            </div>
+          </div>
+          <div class="preview-table-wrap">
+            <table><thead><tr><th>상권명</th><th>유형</th><th>추천도</th><th>유동인구</th><th>임대료</th><th>경쟁도</th></tr></thead>
+              <tbody id="area-preview-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="upload-result" id="area-upload-result"></div>
+      </div>
       <div class="table-wrap">
         <div class="table-header">
           <span class="table-title">상권 목록</span>
@@ -218,6 +285,32 @@
 
     <!-- 양도양수 관리 -->
     <div class="section" id="sec-transfers">
+      <div class="upload-box">
+        <div class="upload-title">📂 CSV 일괄 등록</div>
+        <div class="upload-desc">엑셀에서 작성 후 CSV로 저장하여 업로드하세요. 기존 데이터에 추가됩니다.</div>
+        <div class="upload-row">
+          <button class="btn btn-outline" onclick="downloadTransferSample()">샘플 CSV 받기</button>
+          <label class="btn btn-upload">
+            CSV 업로드
+            <input type="file" accept=".csv" id="transfer-csv-input" style="display:none" onchange="uploadTransferCSV(event)" />
+          </label>
+        </div>
+        <div class="upload-preview" id="transfer-preview" style="display:none">
+          <div class="preview-header">
+            <span id="transfer-preview-count"></span>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-outline" onclick="cancelTransferUpload()">취소</button>
+              <button class="btn btn-green" onclick="confirmTransferUpload()">Firestore에 저장</button>
+            </div>
+          </div>
+          <div class="preview-table-wrap">
+            <table><thead><tr><th>매장명</th><th>지역</th><th>상태</th><th>규모</th><th>오픈연도</th><th>권리금</th><th>임대료</th></tr></thead>
+              <tbody id="transfer-preview-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="upload-result" id="transfer-upload-result"></div>
+      </div>
       <div class="table-wrap">
         <div class="table-header">
           <span class="table-title">양도양수 매물 목록</span>
@@ -240,12 +333,12 @@
     <div class="form-grid">
       <div class="form-group full"><label>상권명 *</label><input id="f-name" placeholder="예: 강남 역삼" /></div>
       <div class="form-group"><label>유형 *</label>
-        <select id="f-type"><option value="office">오피스</option><option value="residential">주거단지</option><option value="campus">대학가</option><option value="transit">교통요지</option><option value="hospital">병원·실버</option></select>
+        <select id="f-type" onchange="updatePopLabel(this.value)"><option value="office">오피스</option><option value="residential">주거단지</option><option value="campus">대학가</option><option value="transit">교통요지</option><option value="hospital">병원·실버</option></select>
       </div>
       <div class="form-group"><label>추천도 *</label>
         <select id="f-score"><option value="high">추천</option><option value="mid">검토</option></select>
       </div>
-      <div class="form-group"><label>하루 유동인구</label><input id="f-pop" placeholder="예: 40만+" /></div>
+      <div class="form-group"><label id="f-pop-label">하루 유동인구</label><input id="f-pop" placeholder="예: 40만+" /></div>
       <div class="form-group"><label>월 임대료(33㎡)</label><input id="f-rent" placeholder="예: 280만원~" /></div>
       <div class="form-group"><label>경쟁도</label><input id="f-comp" placeholder="낮음 / 보통 / 높음" /></div>
       <div class="form-group full"><label>상권 설명</label><textarea id="f-reason" placeholder="이 상권의 특징과 추천 이유를 입력하세요"></textarea></div>
@@ -273,6 +366,7 @@
       <div class="form-group"><label>오픈연도</label><input id="tf-open" placeholder="예: 2020년" /></div>
       <div class="form-group"><label>권리금</label><input id="tf-rights" placeholder="예: 5,000만원" /></div>
       <div class="form-group"><label>월 임대료</label><input id="tf-rent" placeholder="예: 150만원" /></div>
+      <div class="form-group full"><label>월 평균매출</label><input id="tf-revenue" placeholder="예: 월 1,500~2,000만원" /></div>
       <div class="form-group full"><label>매물 설명</label><textarea id="tf-desc" placeholder="매장 특징, 인수 포인트 등을 입력하세요"></textarea></div>
     </div>
     <div class="modal-actions">
@@ -353,6 +447,7 @@ window.switchTab = function(name, el) {
   document.getElementById('sec-' + name).classList.add('active');
   if (name === 'visitors')  loadVisitors();
   if (name === 'clicks')    loadClicks();
+  if (name === 'leads')     loadLeads();
   if (name === 'areas')     loadAreas();
   if (name === 'transfers') loadTransfers();
 };
@@ -441,6 +536,221 @@ window.exportClicks = function() {
   const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='상권별클릭집계.csv'; a.click();
 };
 
+// ── CSV 파싱 공통 ──
+function parseCSV(text) {
+  const lines = text.trim().split('\n').map(l => l.trim()).filter(Boolean);
+  if (lines.length < 2) return { headers: [], rows: [] };
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g,''));
+  const rows = lines.slice(1).map(line => {
+    const cols = []; let cur = '', inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (c === '"') { inQ = !inQ; }
+      else if (c === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
+      else cur += c;
+    }
+    cols.push(cur.trim());
+    const obj = {};
+    headers.forEach((h, i) => { obj[h] = (cols[i]||'').replace(/^"|"$/g,''); });
+    return obj;
+  });
+  return { headers, rows };
+}
+
+// ── 상권 CSV ──
+let areaCsvRows = [];
+
+window.downloadAreaSample = function() {
+  const csv = '\uFEFF' + [
+    'name,type,score,pop,rent,comp,reason',
+    '강남 역삼,office,high,40만+,280만원~,낮음,대형 오피스 밀집 지역으로 평일 직장인 점심 수요가 안정적입니다.',
+    '노원 중계동,residential,high,18만+,130만원~,낮음,대단지 아파트 밀집 지역으로 가족 배달 수요가 강세입니다.',
+    '신촌·홍대,campus,mid,35만+,230만원~,높음,대학생 수요가 풍부하지만 경쟁이 심합니다.',
+  ].join('\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download = '상권_샘플.csv'; a.click();
+};
+
+window.uploadAreaCSV = function(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const { rows } = parseCSV(ev.target.result);
+    areaCsvRows = rows.filter(r => r.name);
+    document.getElementById('area-preview-count').textContent = `총 ${areaCsvRows.length}개 상권 미리보기`;
+    document.getElementById('area-preview-tbody').innerHTML = areaCsvRows.map(r => `
+      <tr><td>${r.name}</td><td>${TYPE_LABEL[r.type]||r.type||'-'}</td>
+      <td><span class="badge ${r.score==='high'?'badge-high':'badge-mid'}">${r.score==='high'?'추천':'검토'}</span></td>
+      <td>${r.pop||'-'}</td><td>${r.rent||'-'}</td><td>${r.comp||'-'}</td></tr>`).join('');
+    document.getElementById('area-preview').style.display = 'block';
+    document.getElementById('area-upload-result').textContent = '';
+  };
+  reader.readAsText(file, 'UTF-8');
+  e.target.value = '';
+};
+
+window.cancelAreaUpload = function() {
+  areaCsvRows = [];
+  document.getElementById('area-preview').style.display = 'none';
+  document.getElementById('area-upload-result').textContent = '';
+};
+
+window.confirmAreaUpload = async function() {
+  if (!areaCsvRows.length) return;
+  const resultEl = document.getElementById('area-upload-result');
+  resultEl.className = 'upload-result';
+  resultEl.textContent = `저장 중... (0 / ${areaCsvRows.length})`;
+  let saved = 0;
+  try {
+    for (const r of areaCsvRows) {
+      await addDoc(collection(db,'areas'), {
+        name: r.name, type: r.type||'office', score: r.score||'high',
+        pop: r.pop||'-', rent: r.rent||'-', comp: r.comp||'-', reason: r.reason||''
+      });
+      saved++;
+      resultEl.textContent = `저장 중... (${saved} / ${areaCsvRows.length})`;
+    }
+    resultEl.className = 'upload-result success';
+    resultEl.textContent = `✅ ${saved}개 상권이 성공적으로 등록되었습니다.`;
+    window.cancelAreaUpload();
+    loadAreas();
+  } catch(e) {
+    resultEl.className = 'upload-result error';
+    resultEl.textContent = `❌ 저장 중 오류가 발생했습니다: ${e.message}`;
+  }
+};
+
+// ── 양도양수 CSV ──
+let transferCsvRows = [];
+
+window.downloadTransferSample = function() {
+  const csv = '\uFEFF' + [
+    'name,region,status,area,open,rights,rent,revenue,desc',
+    '본죽&비빔밥 마포공덕점,서울,on,16평,2018년,6000만원,160만원,월 1500~2000만원,오피스 밀집 상권으로 점심 고정 수요 안정적.',
+    '본죽&비빔밥 노원중계점,서울,hot,13평,2019년,4500만원,130만원,월 1200~1600만원,아파트 단지 내 배달 비중 60% 이상.',
+    '본죽&비빔밥 수원영통점,경기,on,15평,2020년,3500만원,110만원,월 1000~1400만원,신도시 주거 상권. 30-40대 가족 수요 중심.',
+  ].join('\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download = '양도양수_샘플.csv'; a.click();
+};
+
+window.uploadTransferCSV = function(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const { rows } = parseCSV(ev.target.result);
+    transferCsvRows = rows.filter(r => r.name);
+    document.getElementById('transfer-preview-count').textContent = `총 ${transferCsvRows.length}개 매물 미리보기`;
+    document.getElementById('transfer-preview-tbody').innerHTML = transferCsvRows.map(r => `
+      <tr><td>${r.name}</td><td>${r.region||'-'}</td>
+      <td><span class="badge ${STATUS_BADGE[r.status]||'badge-on'}">${STATUS_LABEL[r.status]||r.status||'-'}</span></td>
+      <td>${r.area||'-'}</td><td>${r.open||'-'}</td><td>${r.rights||'-'}</td><td>${r.rent||'-'}</td></tr>`).join('');
+    document.getElementById('transfer-preview').style.display = 'block';
+    document.getElementById('transfer-upload-result').textContent = '';
+  };
+  reader.readAsText(file, 'UTF-8');
+  e.target.value = '';
+};
+
+window.cancelTransferUpload = function() {
+  transferCsvRows = [];
+  document.getElementById('transfer-preview').style.display = 'none';
+  document.getElementById('transfer-upload-result').textContent = '';
+};
+
+window.confirmTransferUpload = async function() {
+  if (!transferCsvRows.length) return;
+  const resultEl = document.getElementById('transfer-upload-result');
+  resultEl.className = 'upload-result';
+  resultEl.textContent = `저장 중... (0 / ${transferCsvRows.length})`;
+  let saved = 0;
+  try {
+    for (const r of transferCsvRows) {
+      await addDoc(collection(db,'transfers'), {
+        name: r.name, region: r.region||'서울', status: r.status||'on',
+        area: r.area||'-', open: r.open||'-', rights: r.rights||'-', rent: r.rent||'-', revenue: r.revenue||'', desc: r.desc||''
+      });
+      saved++;
+      resultEl.textContent = `저장 중... (${saved} / ${transferCsvRows.length})`;
+    }
+    resultEl.className = 'upload-result success';
+    resultEl.textContent = `✅ ${saved}개 매물이 성공적으로 등록되었습니다.`;
+    window.cancelTransferUpload();
+    loadTransfers();
+  } catch(e) {
+    resultEl.className = 'upload-result error';
+    resultEl.textContent = `❌ 저장 중 오류가 발생했습니다: ${e.message}`;
+  }
+};
+
+// ── 상담 신청 관리 ──
+const LEAD_STATUS = { '신규':'badge-new', '연락완료':'badge-contact', '상담완료':'badge-done' };
+
+async function loadLeads() {
+  try {
+    const snap = await getDocs(collection(db,'leads'));
+    const list = snap.docs.map(d=>({id:d.id,...d.data()}))
+      .sort((a,b)=> (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+
+    const total    = list.length;
+    const newCount = list.filter(l=>l.status==='신규').length;
+    const areaCount= list.filter(l=>l.type==='창업추천상권').length;
+    const transCount=list.filter(l=>l.type==='양도양수').length;
+
+    document.getElementById('lead-summary-cards').innerHTML = `
+      <div class="stat-card highlight"><div class="stat-card-label">총 신청 수</div><div class="stat-card-value">${total}</div><div class="stat-card-sub">누적</div></div>
+      <div class="stat-card"><div class="stat-card-label">신규 (미처리)</div><div class="stat-card-value" style="color:var(--red)">${newCount}</div><div class="stat-card-sub">연락 필요</div></div>
+      <div class="stat-card"><div class="stat-card-label">창업 상담</div><div class="stat-card-value">${areaCount}</div><div class="stat-card-sub">추천 상권 문의</div></div>
+      <div class="stat-card"><div class="stat-card-label">양도양수 상담</div><div class="stat-card-value">${transCount}</div><div class="stat-card-sub">매물 인수 문의</div></div>`;
+
+    const empty = document.getElementById('lead-empty');
+    if (!list.length) { document.getElementById('lead-tbody').innerHTML=''; empty.style.display='block'; return; }
+    empty.style.display = 'none';
+
+    document.getElementById('lead-tbody').innerHTML = list.map(l => {
+      const dt = l.createdAt?.seconds ? new Date(l.createdAt.seconds*1000).toLocaleString('ko-KR',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}) : '-';
+      const badgeClass = LEAD_STATUS[l.status] || 'badge-new';
+      return `<tr>
+        <td style="white-space:nowrap;font-size:12px">${dt}</td>
+        <td><span class="badge badge-type">${l.type||'-'}</span></td>
+        <td><strong>${l.name||'-'}</strong></td>
+        <td style="white-space:nowrap">${l.phone||'-'}</td>
+        <td style="font-size:12px">${l.email||'-'}</td>
+        <td>${l.interest||'-'}</td>
+        <td style="font-size:12px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${l.message||''}">${l.message||'-'}</td>
+        <td>
+          <select style="font-size:12px;padding:3px 6px;border:0.5px solid var(--gray-border);border-radius:6px;background:white" onchange="updateLeadStatus('${l.id}',this.value)">
+            <option ${l.status==='신규'?'selected':''}>신규</option>
+            <option ${l.status==='연락완료'?'selected':''}>연락완료</option>
+            <option ${l.status==='상담완료'?'selected':''}>상담완료</option>
+          </select>
+        </td>
+        <td><button class="btn btn-red" style="padding:5px 10px;font-size:12px" onclick="deleteLead('${l.id}')">삭제</button></td>
+      </tr>`;
+    }).join('');
+  } catch(e) { console.error(e); }
+}
+
+window.updateLeadStatus = async function(id, status) {
+  await updateDoc(doc(db,'leads',id), { status });
+  loadLeads();
+};
+
+window.deleteLead = async function(id) {
+  if(!confirm('이 상담 신청을 삭제할까요?')) return;
+  await deleteDoc(doc(db,'leads',id)); loadLeads();
+};
+
+window.exportLeads = async function() {
+  const snap = await getDocs(collection(db,'leads'));
+  const list = snap.docs.map(d=>d.data()).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  const rows = [['신청일시','유형','이름','연락처','이메일','관심상권','문의내용','상태'],
+    ...list.map(l=>{
+      const dt = l.createdAt?.seconds ? new Date(l.createdAt.seconds*1000).toLocaleString('ko-KR') : '-';
+      return [dt, l.type||'', l.name||'', l.phone||'', l.email||'', l.interest||'', (l.message||'').replace(/,/g,' '), l.status||''];
+    })];
+  const csv = '\uFEFF' + rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='상담신청목록.csv'; a.click();
+};
+
 // ── 상권 관리 ──
 async function loadAreas() {
   const snap  = await getDocs(collection(db,'areas'));
@@ -465,8 +775,16 @@ window.openAreaModal = function(data) {
     document.getElementById('f-'+k).value = data?.[k]||'';
   });
   if(!data) { document.getElementById('f-type').value='office'; document.getElementById('f-score').value='high'; }
+  updatePopLabel(document.getElementById('f-type').value);
   document.getElementById('area-modal-bg').classList.add('open');
 };
+
+function updatePopLabel(type) {
+  const label = document.getElementById('f-pop-label');
+  if (label) label.textContent = type === 'residential' ? '세대수' : '하루 유동인구';
+  const input = document.getElementById('f-pop');
+  if (input) input.placeholder = type === 'residential' ? '예: 3,500세대' : '예: 40만+';
+}
 window.closeAreaModal = () => document.getElementById('area-modal-bg').classList.remove('open');
 
 window.saveArea = async function() {
@@ -514,6 +832,7 @@ window.openTransferModal = function(data) {
   document.getElementById('tf-open').value   = data?.open||'';
   document.getElementById('tf-rights').value = data?.rights||'';
   document.getElementById('tf-rent').value   = data?.rent||'';
+  document.getElementById('tf-revenue').value= data?.revenue||'';
   document.getElementById('tf-desc').value   = data?.desc||'';
   document.getElementById('transfer-modal-bg').classList.add('open');
 };
@@ -522,7 +841,7 @@ window.closeTransferModal = () => document.getElementById('transfer-modal-bg').c
 window.saveTransfer = async function() {
   const name = document.getElementById('tf-name').value.trim();
   if(!name){ alert('매장명을 입력해주세요.'); return; }
-  const obj = { name, region:document.getElementById('tf-region').value, status:document.getElementById('tf-status').value, area:document.getElementById('tf-area').value||'-', open:document.getElementById('tf-open').value||'-', rights:document.getElementById('tf-rights').value||'-', rent:document.getElementById('tf-rent').value||'-', desc:document.getElementById('tf-desc').value||'' };
+  const obj = { name, region:document.getElementById('tf-region').value, status:document.getElementById('tf-status').value, area:document.getElementById('tf-area').value||'-', open:document.getElementById('tf-open').value||'-', rights:document.getElementById('tf-rights').value||'-', rent:document.getElementById('tf-rent').value||'-', revenue:document.getElementById('tf-revenue').value||'', desc:document.getElementById('tf-desc').value||'' };
   if(editTransferId) await updateDoc(doc(db,'transfers',editTransferId), obj);
   else await addDoc(collection(db,'transfers'), obj);
   window.closeTransferModal(); loadTransfers();
