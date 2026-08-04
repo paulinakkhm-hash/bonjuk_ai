@@ -156,11 +156,10 @@
     </div>
     <div class="filter-row" id="area-filter-row">
       <button class="filter-btn active-green" onclick="setAreaFilter('all',this)">전체</button>
-      <button class="filter-btn" onclick="setAreaFilter('office',this)">오피스</button>
-      <button class="filter-btn" onclick="setAreaFilter('residential',this)">주거단지</button>
-      <button class="filter-btn" onclick="setAreaFilter('campus',this)">대학가</button>
-      <button class="filter-btn" onclick="setAreaFilter('transit',this)">교통요지</button>
-      <button class="filter-btn" onclick="setAreaFilter('hospital',this)">병원·실버</button>
+      <button class="filter-btn" onclick="setAreaFilter('서울',this)">서울</button>
+      <button class="filter-btn" onclick="setAreaFilter('경기',this)">경기</button>
+      <button class="filter-btn" onclick="setAreaFilter('인천',this)">인천</button>
+      <button class="filter-btn" onclick="setAreaFilter('비수도권',this)">비수도권</button>
     </div>
   </div>
   <div class="scroll-body">
@@ -202,7 +201,7 @@
       <button class="filter-btn" onclick="setTransferFilter('서울',this)">서울</button>
       <button class="filter-btn" onclick="setTransferFilter('경기',this)">경기</button>
       <button class="filter-btn" onclick="setTransferFilter('인천',this)">인천</button>
-      <button class="filter-btn" onclick="setTransferFilter('지방',this)">지방</button>
+      <button class="filter-btn" onclick="setTransferFilter('비수도권',this)">비수도권</button>
     </div>
   </div>
   <div class="scroll-body">
@@ -336,7 +335,11 @@ function renderAreas(list) {
 window.setAreaFilter = function(f, btn) {
   areaFilter = f;
   document.querySelectorAll('#area-filter-row .filter-btn').forEach(b => b.classList.remove('active-green')); btn.classList.add('active-green');
-  renderAreas(f === 'all' ? ALL_AREAS : ALL_AREAS.filter(a => a.type === f));
+  const METRO = ['서울','경기','인천'];
+  const filtered = f === 'all' ? ALL_AREAS
+    : f === '비수도권' ? ALL_AREAS.filter(a => !METRO.includes(a.region))
+    : ALL_AREAS.filter(a => a.region === f);
+  renderAreas(filtered);
 };
 
 window.doSearch = function() {
@@ -384,7 +387,10 @@ function renderTransfers(list) {
 
 window.setTransferFilter = function(f, btn) {
   document.querySelectorAll('#transfer-filter-row .filter-btn').forEach(b => b.classList.remove('active-blue')); btn.classList.add('active-blue');
-  const filtered = f === 'all' ? ALL_TRANSFERS : ALL_TRANSFERS.filter(t => f === '지방' ? !['서울','경기','인천'].includes(t.region) : t.region === f);
+  const METRO = ['서울','경기','인천'];
+  const filtered = f === 'all' ? ALL_TRANSFERS
+    : f === '비수도권' ? ALL_TRANSFERS.filter(t => !METRO.includes(t.region))
+    : ALL_TRANSFERS.filter(t => t.region === f);
   renderTransfers(filtered);
 };
 

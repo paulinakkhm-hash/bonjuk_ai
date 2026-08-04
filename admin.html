@@ -265,7 +265,7 @@
             </div>
           </div>
           <div class="preview-table-wrap">
-            <table><thead><tr><th>상권명</th><th>유형</th><th>추천도</th><th>유동인구</th><th>임대료</th><th>경쟁도</th></tr></thead>
+            <table><thead><tr><th>상권명</th><th>지역</th><th>유형</th><th>임대료</th><th>경쟁도</th></tr></thead>
               <tbody id="area-preview-tbody"></tbody>
             </table>
           </div>
@@ -277,7 +277,7 @@
           <span class="table-title">상권 목록</span>
           <button class="btn btn-green" onclick="openAreaModal()">+ 상권 추가</button>
         </div>
-        <table><thead><tr><th>상권명</th><th>유형</th><th>추천도</th><th>임대료</th><th>경쟁도</th><th></th></tr></thead>
+        <table><thead><tr><th>상권명</th><th>지역</th><th>유형</th><th>임대료</th><th>경쟁도</th><th></th></tr></thead>
           <tbody id="area-tbody"><tr><td colspan="6" class="loading-inline">불러오는 중...</td></tr></tbody>
         </table>
       </div>
@@ -332,11 +332,11 @@
     <div class="modal-title" id="area-modal-title">상권 추가</div>
     <div class="form-grid">
       <div class="form-group full"><label>상권명 *</label><input id="f-name" placeholder="예: 강남 역삼" /></div>
-      <div class="form-group"><label>유형 *</label>
-        <select id="f-type" onchange="updatePopLabel(this.value)"><option value="office">오피스</option><option value="residential">주거단지</option><option value="campus">대학가</option><option value="transit">교통요지</option><option value="hospital">병원·실버</option></select>
+      <div class="form-group"><label>지역 *</label>
+        <select id="f-region"><option value="서울">서울</option><option value="경기">경기</option><option value="인천">인천</option><option value="비수도권">비수도권</option></select>
       </div>
-      <div class="form-group"><label>추천도 *</label>
-        <select id="f-score"><option value="high">추천</option><option value="mid">검토</option></select>
+      <div class="form-group"><label>유형 *</label>
+        <select id="f-type"><option value="office">오피스</option><option value="residential">주거단지</option><option value="campus">대학가</option><option value="transit">교통요지</option><option value="hospital">병원·실버</option></select>
       </div>
       <div class="form-group"><label>월 임대료(33㎡)</label><input id="f-rent" placeholder="예: 280만원~" /></div>
       <div class="form-group"><label>경쟁도</label><input id="f-comp" placeholder="낮음 / 보통 / 높음" /></div>
@@ -356,7 +356,7 @@
     <div class="form-grid">
       <div class="form-group full"><label>매장명 *</label><input id="tf-name" placeholder="예: 본죽&비빔밥 마포공덕점" /></div>
       <div class="form-group"><label>지역 *</label>
-        <select id="tf-region"><option value="서울">서울</option><option value="경기">경기</option><option value="인천">인천</option><option value="지방">지방</option></select>
+        <select id="tf-region"><option value="서울">서울</option><option value="경기">경기</option><option value="인천">인천</option><option value="비수도권">비수도권</option></select>
       </div>
       <div class="form-group"><label>매물 상태 *</label>
         <select id="tf-status"><option value="on">양도 가능</option><option value="hot">급매</option><option value="nego">협의 중</option></select>
@@ -560,10 +560,11 @@ let areaCsvRows = [];
 
 window.downloadAreaSample = function() {
   const csv = '\uFEFF' + [
-    'name,type,score,pop,rent,comp,reason',
-    '강남 역삼,office,high,40만+,280만원~,낮음,대형 오피스 밀집 지역으로 평일 직장인 점심 수요가 안정적입니다.',
-    '노원 중계동,residential,high,18만+,130만원~,낮음,대단지 아파트 밀집 지역으로 가족 배달 수요가 강세입니다.',
-    '신촌·홍대,campus,mid,35만+,230만원~,높음,대학생 수요가 풍부하지만 경쟁이 심합니다.',
+    'name,region,type,rent,comp,reason',
+    '강남 역삼,서울,office,280만원~,낮음,대형 오피스 밀집 지역으로 평일 직장인 점심 수요가 안정적입니다.',
+    '노원 중계동,서울,residential,130만원~,낮음,대단지 아파트 밀집 지역으로 가족 배달 수요가 강세입니다.',
+    '수원 영통,경기,residential,100만원~,보통,신도시 주거 상권으로 30-40대 가족 수요가 중심입니다.',
+    '신촌·홍대,서울,campus,230만원~,높음,대학생 수요가 풍부하지만 경쟁이 심합니다.',
   ].join('\n');
   const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download = '상권_샘플.csv'; a.click();
 };
@@ -576,9 +577,8 @@ window.uploadAreaCSV = function(e) {
     areaCsvRows = rows.filter(r => r.name);
     document.getElementById('area-preview-count').textContent = `총 ${areaCsvRows.length}개 상권 미리보기`;
     document.getElementById('area-preview-tbody').innerHTML = areaCsvRows.map(r => `
-      <tr><td>${r.name}</td><td>${TYPE_LABEL[r.type]||r.type||'-'}</td>
-      <td><span class="badge ${r.score==='high'?'badge-high':'badge-mid'}">${r.score==='high'?'추천':'검토'}</span></td>
-      <td>${r.pop||'-'}</td><td>${r.rent||'-'}</td><td>${r.comp||'-'}</td></tr>`).join('');
+      <tr><td>${r.name}</td><td>${r.region||'-'}</td><td>${TYPE_LABEL[r.type]||r.type||'-'}</td>
+      <td>${r.rent||'-'}</td><td>${r.comp||'-'}</td></tr>`).join('');
     document.getElementById('area-preview').style.display = 'block';
     document.getElementById('area-upload-result').textContent = '';
   };
@@ -601,8 +601,8 @@ window.confirmAreaUpload = async function() {
   try {
     for (const r of areaCsvRows) {
       await addDoc(collection(db,'areas'), {
-        name: r.name, type: r.type||'office', score: r.score||'high',
-        pop: r.pop||'-', rent: r.rent||'-', comp: r.comp||'-', reason: r.reason||''
+        name: r.name, region: r.region||'서울', type: r.type||'office',
+        rent: r.rent||'-', comp: r.comp||'-', reason: r.reason||''
       });
       saved++;
       resultEl.textContent = `저장 중... (${saved} / ${areaCsvRows.length})`;
@@ -622,10 +622,10 @@ let transferCsvRows = [];
 
 window.downloadTransferSample = function() {
   const csv = '\uFEFF' + [
-    'name,region,status,area,open,rights,rent,revenue,desc',
-    '본죽&비빔밥 마포공덕점,서울,on,16평,2018년,6000만원,160만원,월 1500~2000만원,오피스 밀집 상권으로 점심 고정 수요 안정적.',
-    '본죽&비빔밥 노원중계점,서울,hot,13평,2019년,4500만원,130만원,월 1200~1600만원,아파트 단지 내 배달 비중 60% 이상.',
-    '본죽&비빔밥 수원영통점,경기,on,15평,2020년,3500만원,110만원,월 1000~1400만원,신도시 주거 상권. 30-40대 가족 수요 중심.',
+    'name,region,status,area,rights,rent,revenue,desc',
+    '본죽&비빔밥 마포공덕점,서울,on,16평,6000만원,160만원,월 1500~2000만원,오피스 밀집 상권으로 점심 고정 수요 안정적.',
+    '본죽&비빔밥 노원중계점,서울,hot,13평,4500만원,130만원,월 1200~1600만원,아파트 단지 내 배달 비중 60% 이상.',
+    '본죽&비빔밥 수원영통점,경기,on,15평,3500만원,110만원,월 1000~1400만원,신도시 주거 상권. 30-40대 가족 수요 중심.',
   ].join('\n');
   const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download = '양도양수_샘플.csv'; a.click();
 };
@@ -664,7 +664,7 @@ window.confirmTransferUpload = async function() {
     for (const r of transferCsvRows) {
       await addDoc(collection(db,'transfers'), {
         name: r.name, region: r.region||'서울', status: r.status||'on',
-        area: r.area||'-', open: r.open||'-', rights: r.rights||'-', rent: r.rent||'-', revenue: r.revenue||'', desc: r.desc||''
+        area: r.area||'-', rights: r.rights||'-', rent: r.rent||'-', revenue: r.revenue||'', desc: r.desc||''
       });
       saved++;
       resultEl.textContent = `저장 중... (${saved} / ${transferCsvRows.length})`;
@@ -756,8 +756,8 @@ async function loadAreas() {
   document.getElementById('area-tbody').innerHTML = areas.length
     ? areas.map(a=>`<tr>
         <td><strong>${a.name}</strong></td>
+        <td>${a.region||'-'}</td>
         <td>${TYPE_LABEL[a.type]||a.type}</td>
-        <td><span class="badge ${a.score==='high'?'badge-high':'badge-mid'}">${a.score==='high'?'추천':'검토'}</span></td>
         <td>${a.rent||'-'}</td><td>${a.comp||'-'}</td>
         <td><div class="td-actions">
           <button class="btn btn-outline" onclick="editArea('${a.id}')">수정</button>
@@ -769,10 +769,11 @@ async function loadAreas() {
 window.openAreaModal = function(data) {
   editAreaId = data?.id||null;
   document.getElementById('area-modal-title').textContent = data?'상권 수정':'상권 추가';
-  ['name','type','score','rent','comp','reason'].forEach(k => {
+  ['name','type','rent','comp','reason'].forEach(k => {
     document.getElementById('f-'+k).value = data?.[k]||'';
   });
-  if(!data) { document.getElementById('f-type').value='office'; document.getElementById('f-score').value='high'; }
+  document.getElementById('f-region').value = data?.region||'서울';
+  if(!data) { document.getElementById('f-type').value='office'; }
   document.getElementById('area-modal-bg').classList.add('open');
 };
 
@@ -787,7 +788,7 @@ window.closeAreaModal = () => document.getElementById('area-modal-bg').classList
 window.saveArea = async function() {
   const name = document.getElementById('f-name').value.trim();
   if(!name){ alert('상권명을 입력해주세요.'); return; }
-  const obj = { name, type:document.getElementById('f-type').value, score:document.getElementById('f-score').value, rent:document.getElementById('f-rent').value||'-', comp:document.getElementById('f-comp').value||'-', reason:document.getElementById('f-reason').value||'' };
+  const obj = { name, region:document.getElementById('f-region').value, type:document.getElementById('f-type').value, rent:document.getElementById('f-rent').value||'-', comp:document.getElementById('f-comp').value||'-', reason:document.getElementById('f-reason').value||'' };
   if(editAreaId) await updateDoc(doc(db,'areas',editAreaId), obj);
   else await addDoc(collection(db,'areas'), obj);
   window.closeAreaModal(); loadAreas();
