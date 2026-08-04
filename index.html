@@ -54,7 +54,7 @@
   .badge-high { background: var(--green-light); color: var(--green-text); }
   .badge-mid  { background: var(--amber-light);  color: var(--amber-text); }
   .badge-type { background: var(--gray-bg); color: var(--text-sub); }
-  .ac-meta { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .ac-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
   .ac-meta-item { background: var(--gray-bg); border-radius: 6px; padding: 7px 10px; }
   .ac-meta-label { font-size: 10px; color: var(--text-sub); margin-bottom: 1px; }
   .ac-meta-value { font-size: 13px; font-weight: 600; }
@@ -322,12 +322,9 @@ function renderAreas(list) {
   noResult.style.display = 'none';
   document.getElementById('area-list').innerHTML = list.map(a => `
     <div class="area-card" onclick="openAreaModal('${a.id}')">
-      <div class="ac-top"><div class="ac-name">${a.name}</div>
-        <span class="badge ${a.score==='high'?'badge-high':'badge-mid'}">${a.score==='high'?'추천':'검토'}</span>
-      </div>
+      <div class="ac-top"><div class="ac-name">${a.name}</div></div>
       <div style="margin-bottom:10px"><span class="badge badge-type">${TYPE_LABEL[a.type]||a.type}</span></div>
       <div class="ac-meta">
-        <div class="ac-meta-item"><div class="ac-meta-label">${a.type==='residential'?'세대수':'유동인구'}</div><div class="ac-meta-value">${a.pop||'-'}</div></div>
         <div class="ac-meta-item"><div class="ac-meta-label">월 임대료</div><div class="ac-meta-value">${a.rent||'-'}</div></div>
         <div class="ac-meta-item"><div class="ac-meta-label">경쟁도</div><div class="ac-meta-value">${a.comp||'-'}</div></div>
       </div>
@@ -355,8 +352,6 @@ window.openAreaModal = function(id) {
   document.getElementById('am-name').textContent = a.name + ' 상권';
   document.getElementById('am-stats').innerHTML = [
     { label:'상권 유형', value: TYPE_LABEL[a.type]||a.type },
-    { label:'추천도',    value: a.score==='high'?'추천':'검토' },
-    { label: a.type==='residential'?'세대수':'하루 유동인구', value: a.pop||'-' },
     { label:'월 임대료(33㎡)', value: a.rent||'-' },
     { label:'주변 경쟁도', value: a.comp||'-' },
   ].map(s => `<div class="modal-stat"><div class="modal-stat-label">${s.label}</div><div class="modal-stat-value">${s.value}</div></div>`).join('');
