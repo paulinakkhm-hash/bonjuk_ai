@@ -328,7 +328,6 @@ function renderAreas(list) {
         <div class="ac-meta-item"><div class="ac-meta-label">경쟁도</div><div class="ac-meta-value">${a.comp||'-'}</div></div>
       </div>
       <div class="ac-reason">${a.reason||''}</div>
-      <button class="ac-btn">창업 상담 신청 →</button>
     </div>`).join('');
 }
 
@@ -381,7 +380,6 @@ function renderTransfers(list) {
         ${t.revenue ? `<div class="tc-meta-item tc-meta-revenue"><div class="tc-meta-label">월 평균매출</div><div class="tc-meta-value">${t.revenue}</div></div>` : ''}
       </div>
       <div class="tc-reason">${t.desc||''}</div>
-      <button class="tc-btn">인수 상담 신청 →</button>
     </div>`).join('');
 }
 
