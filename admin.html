@@ -304,7 +304,7 @@
             </div>
           </div>
           <div class="preview-table-wrap">
-            <table><thead><tr><th>매장명</th><th>지역</th><th>상태</th><th>규모</th><th>오픈연도</th><th>권리금</th><th>임대료</th></tr></thead>
+            <table><thead><tr><th>매장명</th><th>지역</th><th>상태</th><th>규모</th><th>권리금</th><th>임대료</th></tr></thead>
               <tbody id="transfer-preview-tbody"></tbody>
             </table>
           </div>
@@ -316,8 +316,8 @@
           <span class="table-title">양도양수 매물 목록</span>
           <button class="btn btn-green" onclick="openTransferModal()">+ 매물 추가</button>
         </div>
-        <table><thead><tr><th>매장명</th><th>지역</th><th>규모</th><th>오픈연도</th><th>권리금</th><th>임대료</th><th>상태</th><th></th></tr></thead>
-          <tbody id="transfer-tbody"><tr><td colspan="8" class="loading-inline">불러오는 중...</td></tr></tbody>
+        <table><thead><tr><th>매장명</th><th>지역</th><th>규모</th><th>권리금</th><th>임대료</th><th>상태</th><th></th></tr></thead>
+          <tbody id="transfer-tbody"><tr><td colspan="7" class="loading-inline">불러오는 중...</td></tr></tbody>
         </table>
         <div class="empty-state" id="transfer-empty" style="display:none">등록된 매물이 없습니다.</div>
       </div>
@@ -338,7 +338,6 @@
       <div class="form-group"><label>추천도 *</label>
         <select id="f-score"><option value="high">추천</option><option value="mid">검토</option></select>
       </div>
-      <div class="form-group"><label id="f-pop-label">하루 유동인구</label><input id="f-pop" placeholder="예: 40만+" /></div>
       <div class="form-group"><label>월 임대료(33㎡)</label><input id="f-rent" placeholder="예: 280만원~" /></div>
       <div class="form-group"><label>경쟁도</label><input id="f-comp" placeholder="낮음 / 보통 / 높음" /></div>
       <div class="form-group full"><label>상권 설명</label><textarea id="f-reason" placeholder="이 상권의 특징과 추천 이유를 입력하세요"></textarea></div>
@@ -363,7 +362,6 @@
         <select id="tf-status"><option value="on">양도 가능</option><option value="hot">급매</option><option value="nego">협의 중</option></select>
       </div>
       <div class="form-group"><label>매장 규모</label><input id="tf-area" placeholder="예: 15평" /></div>
-      <div class="form-group"><label>오픈연도</label><input id="tf-open" placeholder="예: 2020년" /></div>
       <div class="form-group"><label>권리금</label><input id="tf-rights" placeholder="예: 5,000만원" /></div>
       <div class="form-group"><label>월 임대료</label><input id="tf-rent" placeholder="예: 150만원" /></div>
       <div class="form-group full"><label>월 평균매출</label><input id="tf-revenue" placeholder="예: 월 1,500~2,000만원" /></div>
@@ -642,7 +640,7 @@ window.uploadTransferCSV = function(e) {
     document.getElementById('transfer-preview-tbody').innerHTML = transferCsvRows.map(r => `
       <tr><td>${r.name}</td><td>${r.region||'-'}</td>
       <td><span class="badge ${STATUS_BADGE[r.status]||'badge-on'}">${STATUS_LABEL[r.status]||r.status||'-'}</span></td>
-      <td>${r.area||'-'}</td><td>${r.open||'-'}</td><td>${r.rights||'-'}</td><td>${r.rent||'-'}</td></tr>`).join('');
+      <td>${r.area||'-'}</td><td>${r.rights||'-'}</td><td>${r.rent||'-'}</td></tr>`).join('');
     document.getElementById('transfer-preview').style.display = 'block';
     document.getElementById('transfer-upload-result').textContent = '';
   };
@@ -771,11 +769,10 @@ async function loadAreas() {
 window.openAreaModal = function(data) {
   editAreaId = data?.id||null;
   document.getElementById('area-modal-title').textContent = data?'상권 수정':'상권 추가';
-  ['name','type','score','pop','rent','comp','reason'].forEach(k => {
+  ['name','type','score','rent','comp','reason'].forEach(k => {
     document.getElementById('f-'+k).value = data?.[k]||'';
   });
   if(!data) { document.getElementById('f-type').value='office'; document.getElementById('f-score').value='high'; }
-  updatePopLabel(document.getElementById('f-type').value);
   document.getElementById('area-modal-bg').classList.add('open');
 };
 
@@ -790,7 +787,7 @@ window.closeAreaModal = () => document.getElementById('area-modal-bg').classList
 window.saveArea = async function() {
   const name = document.getElementById('f-name').value.trim();
   if(!name){ alert('상권명을 입력해주세요.'); return; }
-  const obj = { name, type:document.getElementById('f-type').value, score:document.getElementById('f-score').value, pop:document.getElementById('f-pop').value||'-', rent:document.getElementById('f-rent').value||'-', comp:document.getElementById('f-comp').value||'-', reason:document.getElementById('f-reason').value||'' };
+  const obj = { name, type:document.getElementById('f-type').value, score:document.getElementById('f-score').value, rent:document.getElementById('f-rent').value||'-', comp:document.getElementById('f-comp').value||'-', reason:document.getElementById('f-reason').value||'' };
   if(editAreaId) await updateDoc(doc(db,'areas',editAreaId), obj);
   else await addDoc(collection(db,'areas'), obj);
   window.closeAreaModal(); loadAreas();
@@ -812,7 +809,7 @@ async function loadTransfers() {
   document.getElementById('transfer-tbody').innerHTML = list.length
     ? list.map(t=>`<tr>
         <td><strong>${t.name}</strong></td>
-        <td>${t.region||'-'}</td><td>${t.area||'-'}</td><td>${t.open||'-'}</td><td>${t.rights||'-'}</td><td>${t.rent||'-'}</td>
+        <td>${t.region||'-'}</td><td>${t.area||'-'}</td><td>${t.rights||'-'}</td><td>${t.rent||'-'}</td>
         <td><span class="badge ${STATUS_BADGE[t.status]||'badge-on'}">${STATUS_LABEL[t.status]||t.status}</span></td>
         <td><div class="td-actions">
           <button class="btn btn-outline" onclick="editTransfer('${t.id}')">수정</button>
@@ -829,7 +826,6 @@ window.openTransferModal = function(data) {
   document.getElementById('tf-region').value = data?.region||'서울';
   document.getElementById('tf-status').value = data?.status||'on';
   document.getElementById('tf-area').value   = data?.area||'';
-  document.getElementById('tf-open').value   = data?.open||'';
   document.getElementById('tf-rights').value = data?.rights||'';
   document.getElementById('tf-rent').value   = data?.rent||'';
   document.getElementById('tf-revenue').value= data?.revenue||'';
@@ -841,7 +837,7 @@ window.closeTransferModal = () => document.getElementById('transfer-modal-bg').c
 window.saveTransfer = async function() {
   const name = document.getElementById('tf-name').value.trim();
   if(!name){ alert('매장명을 입력해주세요.'); return; }
-  const obj = { name, region:document.getElementById('tf-region').value, status:document.getElementById('tf-status').value, area:document.getElementById('tf-area').value||'-', open:document.getElementById('tf-open').value||'-', rights:document.getElementById('tf-rights').value||'-', rent:document.getElementById('tf-rent').value||'-', revenue:document.getElementById('tf-revenue').value||'', desc:document.getElementById('tf-desc').value||'' };
+  const obj = { name, region:document.getElementById('tf-region').value, status:document.getElementById('tf-status').value, area:document.getElementById('tf-area').value||'-', rights:document.getElementById('tf-rights').value||'-', rent:document.getElementById('tf-rent').value||'-', revenue:document.getElementById('tf-revenue').value||'', desc:document.getElementById('tf-desc').value||'' };
   if(editTransferId) await updateDoc(doc(db,'transfers',editTransferId), obj);
   else await addDoc(collection(db,'transfers'), obj);
   window.closeTransferModal(); loadTransfers();
